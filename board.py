@@ -19,7 +19,7 @@ class Field:
         """
         self._status = FieldStatus.NOTHING
 
-    def __str__(self):
+    def __str__(self) -> str:
         """
         Used to print out the fields in the console
         """
@@ -32,8 +32,118 @@ class Field:
         else:  # FieldStatus.SUNK
             return 'X'
 
-    def status(self):
+    def status(self) -> FieldStatus:
         return self._status
 
     def set_status(self, new_status: FieldStatus):
         self._status = new_status
+
+
+def translate_coordinates(x: str, y: int) -> tuple[int, int]:
+    """
+    Function used to translate in-game coordinates (like a 7) to board field
+    coordinates (a 7 is 0 6, since a is the first column and 7 is the 7th row,
+    and computers count from 0).
+    :param x: x coordinate of the field, a letter from a to j
+    :type x: str
+    :param y: y coordinate of the field, a number from 1 to 10
+    :type y: int
+    :return: a tuple of coordinates translated to indices of the fields array
+    """
+    x = x.lower()
+    coord_x = ord(x) - 97
+    coord_y = y - 1
+    return coord_x, coord_y
+
+
+class Board:
+    """
+    Class being an array of fields, representing a 10x10 board
+    """
+
+    def __init__(self):
+        """
+        Creates a 10x10 array with empty fields, which status can be set with
+        set_field_status() method
+        """
+        self._fields = []
+        for y in range(10):
+            row = []
+            for x in range(10):
+                row.append(Field())
+            self._fields.append(row)
+
+    def __str__(self):
+        """
+        Prints out the contents of this board
+        """
+        for row in self._fields:
+            current = ""
+            for field in row:
+                current += str(field)
+            print(current)
+
+    def get_field_status(self, x: str, y: int) -> FieldStatus:
+        c_x, c_y = translate_coordinates(x, y)
+        return self._fields[c_y][c_x].status()
+
+    def set_field_status(self, x: str, y: int, status: FieldStatus):
+        c_x, c_y = translate_coordinates(x, y)
+        self._fields[c_y][c_x].set_status(status)
+
+
+class GameBoard:
+    """
+    Board used in game, consists of two Boards, one of them being the data
+    board, visible for the player, and one of them being the visible board,
+    seen by the enemy, based on the data board.
+    """
+
+    def __init__(self, data_board: Board):
+        """
+        Creates a GameBoard, by taking a data board and creating a visible
+        board for it
+        :param data_board: raw board with all positions of the ships etc
+        :type data_board: Board
+        """
+        self._data_board = data_board
+        self._visible_board = Board()
+
+    def discover_field(self, x: str, y: int) -> bool:
+        """
+        Discovers a field when a player decides to shoot at it.
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        :return: true if there was a hit, false if it was a miss. The return
+        value will be used to check which ship has been hit, and if that ship
+        sunk because of it
+        """
+        field_status = self._data_board.get_field_status(x, y)
+        self._visible_board.set_field_status(x, y, field_status)
+        if field_status == FieldStatus.SHIP:
+            return True
+        return False
+
+    def mark_as_empty(self, x: str, y: int):
+        """
+        Marks a field as empty (with a miss) on the visible board, as a visual
+        indicator for a player
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        """
+        self._visible_board.set_field_status(x, y, FieldStatus.MISS)
+
+    def print_board(self, draw_as_enemy: bool = False):
+        """
+        Prints the board in the given mode
+        :param draw_as_enemy: if set to true, draws the version of the board
+        visible to the enemy, otherwise it prints out the data board
+        """
+        if draw_as_enemy:
+            print(self._visible_board)
+        else:
+            print(self._data_board)
