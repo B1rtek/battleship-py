@@ -68,7 +68,7 @@ class Ship:
         for x, y in field_coordinates:
             self._segments.append(ShipSegment(x, y))
 
-    def __str__(self, draw_as_enemy: bool = False):
+    def ship_to_str(self, draw_as_enemy: bool = False):
         """
         Prints out a representation of the ship's condition in a graphical form
         For example, "████" represents a ship of size 4 without any damage,
@@ -220,7 +220,7 @@ class Fleet:
         self._ships = []
         self._selected_ship = None
 
-    def __str__(self):
+    def fleet_to_str(self, draw_as_enemy: bool = False):
         """
         Returns a string containing all ships in the fleet and their current
         states. For example:
@@ -237,10 +237,10 @@ class Fleet:
         row1.append(self._ships[-1])
         row2 = self._ships[3:-1]
         for ship in row1:
-            fleet += str(ship) + ' '
+            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
         fleet += '\n'
         for ship in row2:
-            fleet += str(ship) + ' '
+            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
         return fleet
 
     def create_random(self):
@@ -284,10 +284,13 @@ class Fleet:
         :type x: str
         :param y: y coordinate of the field
         :type y: int
+        :return: True if the ship sinks completely, otherwise False
         """
         ship_hit = self.find_ship(x, y)
         ship_hit.sink(x, y)
-        pass
+        if ship_hit.sunk():
+            return True
+        return False
 
     def find_ship(self, x: str, y: int):
         """
@@ -408,11 +411,11 @@ class Fleet:
 def main():
     fleet = Fleet()
     fleet.create_random()
-    game_board = board.Board()
+    player_board = board.Board()
     while True:
-        game_board.place_fleet(fleet)
-        print(game_board)
-        print(fleet)
+        player_board.place_fleet(fleet)
+        print(player_board)
+        print(fleet.fleet_to_str())
         whole_command = input("> ")
         command = whole_command.split()[0]
         if command == "sel":
@@ -425,8 +428,23 @@ def main():
             print(fleet.set_ship_position(x, y))
         elif command == "rot":
             print(fleet.change_ship_rotation())
+        elif command == "done":
+            break
         else:
             print("Unknown command")
+    enemy_game_board = board.GameBoard(player_board)
+    while True:
+        enemy_game_board.print_board(draw_as_enemy=True)
+        print(fleet.fleet_to_str(draw_as_enemy=True))
+        whole_command = input("> ")
+        x, s_y = whole_command.split()
+        y = int(s_y)
+        hit = enemy_game_board.discover_field(x, y)
+        if hit:
+            sunk = fleet.hit(x, y)
+            if sunk:
+                ship_to_sink = fleet.find_ship(x, y)
+                enemy_game_board.sink_ship(ship_to_sink)
 
 
 if __name__ == "__main__":

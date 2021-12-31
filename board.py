@@ -82,7 +82,7 @@ class Board:
         """
         board_str = "   abcdefghij\n\n"
         for number, row in enumerate(self._fields):
-            current = f"{(number+1):>2} "
+            current = f"{(number + 1):>2} "
             for field in row:
                 current += str(field)
             current += '\n'
@@ -113,6 +113,17 @@ class Board:
         ships = fleet_to_place.ships()
         for ship in ships:
             self.place_ship(ship)
+
+    def mark_sunken_ship(self, ship_to_sink: Ship):
+        """
+        Marks a given ship as a sunken ship on the board
+        :param ship_to_sink: Ship to be marked as sunken
+        :type ship_to_sink: Ship
+        """
+        segments = ship_to_sink.segments()
+        for segment in segments:
+            x, y = segment.position()
+            self.set_field_status(x, y, FieldStatus.SUNK)
 
     def get_field_status(self, x: str, y: int) -> FieldStatus:
         c_x, c_y = translate_coordinates(x, y)
@@ -152,6 +163,9 @@ class GameBoard:
         sunk because of it
         """
         field_status = self._data_board.get_field_status(x, y)
+        if field_status == FieldStatus.NOTHING:
+            field_status = FieldStatus.MISS
+            self._data_board.set_field_status(x, y, field_status)
         self._visible_board.set_field_status(x, y, field_status)
         if field_status == FieldStatus.SHIP:
             return True
@@ -167,6 +181,15 @@ class GameBoard:
         :type y: int
         """
         self._visible_board.set_field_status(x, y, FieldStatus.MISS)
+
+    def sink_ship(self, ship_to_sink: Ship):
+        """
+        Called when a ship in a fleet has sunk to mark him as sunk on the map
+        :param ship_to_sink: Ship to be sunk
+        :type ship_to_sink: Ship
+        """
+        self._data_board.mark_sunken_ship(ship_to_sink)
+        self._visible_board.mark_sunken_ship(ship_to_sink)
 
     def print_board(self, draw_as_enemy: bool = False):
         """
