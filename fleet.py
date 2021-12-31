@@ -336,6 +336,44 @@ class Fleet:
         vertical = self._selected_ship.vertical()
         size = self._selected_ship.size()
         new_ship = Ship((x, y), size, vertical)
+        old_ship_index = self._new_ship_test_fit(new_ship)
+        if old_ship_index == -1:
+            return "The new placement is invalid"
+        self._ships[old_ship_index] = new_ship
+        self._selected_ship = new_ship
+        return "Ship has been moved to a new location"
+
+    def change_ship_rotation(self):
+        """
+        Changes selected ship's rotation from vertical to horizontal, or the
+        other way, rotating it around its origin. Just like in
+        set_ship_position, a test fit is conducted to see if the rotated ship
+        doesn't collide with any other ships.
+        :return: A message stating either success or failure of the rotation
+        """
+        if self._selected_ship is None:
+            return "No ship has been selected"
+        vertical = not self._selected_ship.vertical()
+        size = self._selected_ship.size()
+        x, y = self._selected_ship.origin()
+        new_ship = Ship((x, y), size, vertical)
+        old_ship_index = self._new_ship_test_fit(new_ship)
+        if old_ship_index == -1:
+            return "The new rotation is invalid"
+        self._ships[old_ship_index] = new_ship
+        self._selected_ship = new_ship
+        return "Ship has been rotated"
+
+    def _new_ship_test_fit(self, new_ship: Ship) -> int:
+        """
+        Checks if the fleet with a new ship instead of the selected one doesn't
+        collide with itself. This method is only used by set_ship_position
+        and change_ship_rotation methods
+        :param new_ship: a new ship that this fleet will be tested with
+        :type new_ship: Ship
+        :return: new_ship's index in the self._ships list if it fits with the
+        other ships, otherwise -1 to indicate that it can't be placed
+        """
         new_fleet = deepcopy(self._ships)
         old_ship_index = self._ships.index(self._selected_ship)
         new_fleet[old_ship_index] = new_ship
@@ -349,11 +387,9 @@ class Fleet:
                 mark_misses_around(ship, temp_board)
                 temp_board.place_ship(ship)
             else:
-                return "The new placement is invalid"
+                return -1
         # If all ships have been placed it means that a new location is good
-        self._ships[old_ship_index] = new_ship
-        self._selected_ship = new_ship
-        return "Ship has been moved to a new location"
+        return old_ship_index
 
     def ships(self):
         return self._ships
@@ -377,12 +413,18 @@ def main():
         game_board.place_fleet(fleet)
         print(game_board)
         print(fleet)
-        command, x, s_y = input("> ").split()
-        y = int(s_y)
+        whole_command = input("> ")
+        command = whole_command.split()[0]
         if command == "sel":
+            command, x, s_y = whole_command.split()
+            y = int(s_y)
             print(fleet.select_ship(x, y))
         elif command == "mv":
+            command, x, s_y = whole_command.split()
+            y = int(s_y)
             print(fleet.set_ship_position(x, y))
+        elif command == "rot":
+            print(fleet.change_ship_rotation())
         else:
             print("Unknown command")
 
