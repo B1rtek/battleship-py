@@ -55,6 +55,7 @@ class Ship:
         :type vertical: bool
         """
         self._segments = []
+        self._size = size
         x, y = origin
         if vertical:
             field_coordinates = [(x, i) for i in range(y, y + size)]
@@ -64,15 +65,24 @@ class Ship:
         for x, y in field_coordinates:
             self._segments.append(ShipSegment(x, y))
 
-    def __str__(self):
+    def __str__(self, draw_as_enemy: bool = False):
         """
         Prints out a representation of the ship's condition in a graphical form
         For example, "████" represents a ship of size 4 without any damage,
-        "█XX" represents a ship of size 3 with two of its segments destroyed.
+        "█▒▒" represents a ship of size 3 with two of its segments destroyed.
+        :param draw_as_enemy: if set to True, the ship will be drawn as a sunk
+        one or undamaged one, to not indicate which ship has been struck to the
+        enemy, False by default
+        :type draw_as_enemy: bool
         """
+        if draw_as_enemy:
+            if self.sunk():
+                return self._size * '▒'
+            else:
+                return self._size * '█'
         representation = ""
         for segment in self._segments:
-            representation += 'X' if segment.sunk() else '█'
+            representation += '▒' if segment.sunk() else '█'
         return representation
 
     def check_if_hit(self, x: str, y: int) -> bool:
@@ -197,9 +207,35 @@ class Fleet:
 
     def __init__(self):
         """
-        Initializes a Fleet by creating an empty list of ships
+        Initializes a Fleet by creating an empty list of ships. Ships in the
+        self._ships list are always put in the order from biggest to smallest,
+        and that's how they are generated in create_random() and create_fleet()
+        methods
         """
         self._ships = []
+
+    def __str__(self):
+        """
+        Returns a string containing all ships in the fleet and their current
+        states. For example:
+        █▒▒█ ███ ███ ▒
+
+        ██ ██ ██ ▒ █ █
+        represents a fleet with it's 4 segment ship with its middle segments
+        damaged, and the first and fourth small ships destroyed.
+        :return: a string representing a fleet, similar to the example shown
+        above
+        """
+        fleet = ""
+        row1 = self._ships[:3]
+        row1.append(self._ships[-1])
+        row2 = self._ships[3:-1]
+        for ship in row1:
+            fleet += str(ship) + ' '
+        fleet += '\n'
+        for ship in row2:
+            fleet += str(ship) + ' '
+        return fleet
 
     def create_random(self):
         """
@@ -227,6 +263,23 @@ class Fleet:
             mark_misses_around(ship_to_add, temp_board)
             temp_board.place_ship(ship_to_add)
 
+    def create_fleet(self):
+        """
+        Lets a player create their own fleet by letting them choose positions
+        of their ships manually.
+        """
+        pass
+
+    def hit(self, x: str, y: int):
+        """
+        Damages a ship in the specified coordinates
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        """
+        pass
+
     def ships(self):
         return self._ships
 
@@ -237,6 +290,7 @@ def main():
     game_board = board.Board()
     game_board.place_fleet(fleet)
     print(game_board)
+    print(fleet)
 
 
 if __name__ == "__main__":

@@ -33,7 +33,7 @@ class Field:
         elif self._status == FieldStatus.SHIP:
             return '█'
         else:  # FieldStatus.SUNK
-            return 'X'
+            return '▒'
 
     def status(self) -> FieldStatus:
         return self._status
