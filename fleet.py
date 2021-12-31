@@ -96,7 +96,7 @@ class Ship:
         :param y: y coordinate of a field
         :type y: int
         :return: True if the given coordinates belong to this Ship's segments,
-        otherwhise False
+        otherwise False
         """
         for segment in self._segments:
             if segment.position() == (x, y):
@@ -369,4 +369,23 @@ class Fleet:
         return False
 
 
+def main():
+    fleet = Fleet()
+    fleet.create_random()
+    game_board = board.Board()
+    while True:
+        game_board.place_fleet(fleet)
+        print(game_board)
+        print(fleet)
+        command, x, s_y = input("> ").split()
+        y = int(s_y)
+        if command == "sel":
+            print(fleet.select_ship(x, y))
+        elif command == "mv":
+            print(fleet.set_ship_position(x, y))
+        else:
+            print("Unknown command")
 
+
+if __name__ == "__main__":
+    main()
