@@ -171,16 +171,23 @@ class GameBoard:
             return True
         return False
 
-    def mark_as_empty(self, x: str, y: int):
+    def mark_as_empty(self, x: str, y: int) -> bool:
         """
         Marks a field as empty (with a miss) on the visible board, as a visual
-        indicator for a player
+        indicator for a player, only if the field that is being marked has
+        nothing on it
         :param x: x coordinate of the field
         :type x: str
         :param y: y coordinate of the field
         :type y: int
+        :return: True if the field was marked, False if it wasn't due to it
+        containing a ship
         """
+        current_status = self._visible_board.get_field_status(x, y)
+        if current_status != FieldStatus.NOTHING:
+            return False
         self._visible_board.set_field_status(x, y, FieldStatus.MISS)
+        return True
 
     def sink_ship(self, ship_to_sink: Ship):
         """

@@ -2,6 +2,7 @@ from copy import deepcopy
 from random import choice
 
 import board
+import os
 
 
 class ShipSegment:
@@ -437,14 +438,26 @@ def main():
         enemy_game_board.print_board(draw_as_enemy=True)
         print(fleet.fleet_to_str(draw_as_enemy=True))
         whole_command = input("> ")
-        x, s_y = whole_command.split()
-        y = int(s_y)
-        hit = enemy_game_board.discover_field(x, y)
-        if hit:
-            sunk = fleet.hit(x, y)
-            if sunk:
-                ship_to_sink = fleet.find_ship(x, y)
-                enemy_game_board.sink_ship(ship_to_sink)
+        command = whole_command.split()[0]
+        if command == "st":
+            command, x, s_y = whole_command.split()
+            y = int(s_y)
+            hit = enemy_game_board.discover_field(x, y)
+            if hit:
+                sunk = fleet.hit(x, y)
+                print("You've hit a ship!")
+                if sunk:
+                    ship_to_sink = fleet.find_ship(x, y)
+                    enemy_game_board.sink_ship(ship_to_sink)
+                    print("You've sunk a ship!")
+        elif command == "me":
+            command, x, s_y = whole_command.split()
+            y = int(s_y)
+            marked = enemy_game_board.mark_as_empty(x, y)
+            if not marked:
+                print("The field you tried to mark has a discovered ship")
+        else:
+            print("Unknown command")
 
 
 if __name__ == "__main__":
