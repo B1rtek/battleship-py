@@ -24,7 +24,7 @@ class Field:
     def __str__(self) -> str:
         """
         Used to print out the fields in the console
-        :return: a character representing
+        :return: a character representing a field's status
         """
         if self._status == FieldStatus.NOTHING:
             return ' '
@@ -94,6 +94,7 @@ class Board:
         Places a ship on the board by marking all fields it occupies with a
         status of FieldStatus.SHIP
         :param ship: Ship to be placed
+        :type ship: Ship
         """
         segments = ship.segments()
         for segment in segments:
@@ -104,6 +105,7 @@ class Board:
         """
         Places ships defined in ships on the board
         :param fleet_to_place: a Fleet containing player's ships
+        :type fleet_to_place: Fleet
         """
         ships = fleet_to_place.ships()
         for ship in ships:
@@ -168,6 +170,7 @@ class GameBoard:
         Prints the board in the given mode
         :param draw_as_enemy: if set to true, draws the version of the board
         visible to the enemy, otherwise it prints out the data board
+        :type draw_as_enemy: bool
         """
         if draw_as_enemy:
             print(self._visible_board)

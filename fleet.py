@@ -175,7 +175,7 @@ def mark_misses_around(ship: Ship, placement_board: "board.Board"):
     :param ship: Ship around which the fields will be marked
     :type ship: Ship
     :param placement_board: Board on which the fields will be marked
-    :type placement_board: board.Board
+    :type placement_board: Board
     """
     segments = ship.segments()
     for segment in segments:
@@ -196,6 +196,9 @@ class Fleet:
     """
 
     def __init__(self):
+        """
+        Initializes a Fleet by creating an empty list of ships
+        """
         self._ships = []
 
     def create_random(self):
@@ -226,3 +229,15 @@ class Fleet:
 
     def ships(self):
         return self._ships
+
+
+def main():
+    fleet = Fleet()
+    fleet.create_random()
+    game_board = board.Board()
+    game_board.place_fleet(fleet)
+    print(game_board)
+
+
+if __name__ == "__main__":
+    main()
