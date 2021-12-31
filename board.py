@@ -1,5 +1,7 @@
 from enum import Enum
 
+import fleet
+
 
 class FieldStatus(Enum):
     NOTHING = 0,  # default status for undiscovered fields
@@ -22,6 +24,7 @@ class Field:
     def __str__(self) -> str:
         """
         Used to print out the fields in the console
+        :return: a character representing
         """
         if self._status == FieldStatus.NOTHING:
             return ' '
@@ -77,11 +80,34 @@ class Board:
         """
         Prints out the contents of this board
         """
-        for row in self._fields:
-            current = ""
+        board_str = "   abcdefghij\n\n"
+        for number, row in enumerate(self._fields):
+            current = f"{(number+1):>2} "
             for field in row:
                 current += str(field)
-            print(current)
+            current += '\n'
+            board_str += current
+        return board_str
+
+    def place_ship(self, ship: fleet.Ship):
+        """
+        Places a ship on the board by marking all fields it occupies with a
+        status of FieldStatus.SHIP
+        :param ship: Ship to be placed
+        """
+        segments = ship.segments()
+        for segment in segments:
+            x, y = segment.position()
+            self.set_field_status(x, y, FieldStatus.SHIP)
+
+    def place_fleet(self, fleet_to_place: fleet.Fleet):
+        """
+        Places ships defined in ships on the board
+        :param fleet_to_place: a Fleet containing player's ships
+        """
+        ships = fleet_to_place.ships()
+        for ship in ships:
+            self.place_ship(ship)
 
     def get_field_status(self, x: str, y: int) -> FieldStatus:
         c_x, c_y = translate_coordinates(x, y)
