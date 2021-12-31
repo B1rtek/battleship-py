@@ -1,6 +1,6 @@
 from enum import Enum
 
-import fleet
+from fleet import Ship, Fleet
 
 
 class FieldStatus(Enum):
@@ -89,7 +89,7 @@ class Board:
             board_str += current
         return board_str
 
-    def place_ship(self, ship: fleet.Ship):
+    def place_ship(self, ship: Ship):
         """
         Places a ship on the board by marking all fields it occupies with a
         status of FieldStatus.SHIP
@@ -101,12 +101,15 @@ class Board:
             x, y = segment.position()
             self.set_field_status(x, y, FieldStatus.SHIP)
 
-    def place_fleet(self, fleet_to_place: fleet.Fleet):
+    def place_fleet(self, fleet_to_place: Fleet):
         """
         Places ships defined in ships on the board
         :param fleet_to_place: a Fleet containing player's ships
         :type fleet_to_place: Fleet
         """
+        for row in self._fields:
+            for field in row:
+                field.set_status(FieldStatus.NOTHING)
         ships = fleet_to_place.ships()
         for ship in ships:
             self.place_ship(ship)

@@ -1,3 +1,4 @@
+from copy import deepcopy
 from random import choice
 
 import board
@@ -56,6 +57,8 @@ class Ship:
         """
         self._segments = []
         self._size = size
+        self._vertical = vertical
+        self._origin = origin
         x, y = origin
         if vertical:
             field_coordinates = [(x, i) for i in range(y, y + size)]
@@ -85,7 +88,7 @@ class Ship:
             representation += '▒' if segment.sunk() else '█'
         return representation
 
-    def check_if_hit(self, x: str, y: int) -> bool:
+    def check_if_belongs(self, x: str, y: int) -> bool:
         """
         Checks if the given coordinates belong to any of this Ship's segments
         :param x: x coordinate of a field
@@ -113,7 +116,7 @@ class Ship:
     def sink(self, x: str, y: int):
         """
         Sinks the specified segment of this ship. Always called after
-        check_if_hit
+        check_if_belongs
         :param x: x coordinate of a segment
         :type x: str
         :param y: y coordinate of a segment
@@ -126,6 +129,15 @@ class Ship:
 
     def segments(self):
         return self._segments
+
+    def size(self):
+        return self._size
+
+    def vertical(self):
+        return self._vertical
+
+    def origin(self):
+        return self._origin
 
 
 valid_x_coords = "abcdefghij"
@@ -144,25 +156,17 @@ def field_on_board(field: tuple[str, int]) -> bool:
     return False
 
 
-def field_available(x, y, size, rotation, temp_board):
+def field_available(temp_ship, temp_board):
     """
     Checks if a ship with given position, size and rotation can be placed on
     the board, checking if all segments of the ship have valid board
     coordinates, and if it doesn't collide with any ships placed earlier
-    :param x: x coordinate of the proposed Ship's origin
-    :type x: str
-    :param y: y coordinate of the proposed Ship's origin
-    :type y: int
-    :param size: size od the proposed Ship
-    :type size: int
-    :param rotation: rotation of the proposed Ship, True means vertical, False
-    means horizontal, just like in the Ship class constructor
-    :type rotation: bool
+    :param temp_ship: a ship which placement will be tested
+    :type temp_ship: Ship
     :param temp_board: board on which the proposed Ship is to be placed
     :type temp_board: Board
     :return: True if the proposed Ship can be placed, False otherwise
     """
-    temp_ship = Ship((x, y), size, rotation)
     fields = [segment.position() for segment in
               temp_ship.segments()]
     for field in fields:
@@ -210,9 +214,11 @@ class Fleet:
         Initializes a Fleet by creating an empty list of ships. Ships in the
         self._ships list are always put in the order from biggest to smallest,
         and that's how they are generated in create_random() and create_fleet()
-        methods
+        methods. self._selected_ship is the ship that will be moved or rotated
+        while modifying the board
         """
         self._ships = []
+        self._selected_ship = None
 
     def __str__(self):
         """
@@ -255,7 +261,8 @@ class Fleet:
             for x in valid_x_coords:
                 for c_y in range(10):
                     y = c_y + 1
-                    if field_available(x, y, size, rotation, temp_board):
+                    temp_ship = Ship((x, y), size, rotation)
+                    if field_available(temp_ship, temp_board):
                         good_coords.append((x, y))
             position = choice(good_coords)
             ship_to_add = Ship(position, size, rotation)
@@ -278,20 +285,88 @@ class Fleet:
         :param y: y coordinate of the field
         :type y: int
         """
+        ship_hit = self.find_ship(x, y)
+        ship_hit.sink(x, y)
         pass
+
+    def find_ship(self, x: str, y: int):
+        """
+        Finds a ship positioned on the selected coordinates
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        :return: Ship situated in this position or None if there is no ship
+        there
+        """
+        for ship in self._ships:
+            if ship.check_if_belongs(x, y):
+                return ship
+        return None
+
+    def select_ship(self, x: str, y: int) -> str:
+        """
+        Selects a ship that can be moved or rotated while setting up the fleet
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        :return: A message stating that a ship has been selected or that it
+        wasn't
+        """
+        self._selected_ship = self.find_ship(x, y)
+        if self._selected_ship is not None:
+            return "A ship has been selected"
+        return "No ship was found on these coordinates"
+
+    def set_ship_position(self, x: str, y: int) -> str:
+        """
+        Sets selected ship's position to the specified coordinates. Coordinates
+        point to the ship's new origin. Before moving the ship, a test is
+        conducted to see if the new position is valid and doesn't collide with
+        any ships from this fleet.
+        :param x: x coordinate of the new position
+        :type x: str
+        :param y: y coordinate of the new position
+        :type y: int
+        :return: A message stating either success or failure of the move
+        """
+        if self._selected_ship is None:
+            return "No ship has been selected"
+        vertical = self._selected_ship.vertical()
+        size = self._selected_ship.size()
+        new_ship = Ship((x, y), size, vertical)
+        new_fleet = deepcopy(self._ships)
+        old_ship_index = self._ships.index(self._selected_ship)
+        new_fleet[old_ship_index] = new_ship
+        # Now a test fit will be conducted to see if the fleet doesn't collide
+        # with itself, and if it doesn't, the selected_ship will be assigned
+        # with a reference to the new_ship, replacing it in selection and in
+        # the fleet
+        temp_board = board.Board()
+        for ship in new_fleet:
+            if field_available(ship, temp_board):
+                mark_misses_around(ship, temp_board)
+                temp_board.place_ship(ship)
+            else:
+                return "The new placement is invalid"
+        # If all ships have been placed it means that a new location is good
+        self._ships[old_ship_index] = new_ship
+        self._selected_ship = new_ship
+        return "Ship has been moved to a new location"
 
     def ships(self):
         return self._ships
 
+    def is_alive(self):
+        """
+        Checks if the whole fleet has sunk
+        :return: True if there are still ships afloat, False otherwise
+        """
+        for ship in self._ships:
+            if not ship.sunk():
+                return True
+        return False
 
-def main():
-    fleet = Fleet()
-    fleet.create_random()
-    game_board = board.Board()
-    game_board.place_fleet(fleet)
-    print(game_board)
-    print(fleet)
 
 
-if __name__ == "__main__":
-    main()
