@@ -1,8 +1,8 @@
 from copy import deepcopy
 from random import choice
 
+from enemy import Enemy
 import board
-import os
 
 
 class ShipSegment:
@@ -413,6 +413,7 @@ def main():
     fleet = Fleet()
     fleet.create_random()
     player_board = board.Board()
+    enemy = Enemy()
     while True:
         player_board.place_fleet(fleet)
         print(player_board)
@@ -434,30 +435,59 @@ def main():
         else:
             print("Unknown command")
     enemy_game_board = board.GameBoard(player_board)
+    # while True:
+    #     enemy_game_board.print_board(draw_as_enemy=True)
+    #     print(fleet.fleet_to_str(draw_as_enemy=True))
+    #     whole_command = input("> ")
+    #     command = whole_command.split()[0]
+    #     if command == "st":
+    #         command, x, s_y = whole_command.split()
+    #         y = int(s_y)
+    #         hit = enemy_game_board.discover_field(x, y)
+    #         if hit:
+    #             sunk = fleet.hit(x, y)
+    #             print("You've hit a ship!")
+    #             if sunk:
+    #                 ship_to_sink = fleet.find_ship(x, y)
+    #                 enemy_game_board.sink_ship(ship_to_sink)
+    #                 print("You've sunk a ship!")
+    #     elif command == "me":
+    #         command, x, s_y = whole_command.split()
+    #         y = int(s_y)
+    #         marked = enemy_game_board.mark_as_empty(x, y)
+    #         if not marked:
+    #             print("The field you tried to mark has a discovered ship")
+    #     else:
+    #         print("Unknown command")
     while True:
+        target = enemy.shoot()
+        print(f"Target: {target}")
+        x, y = target
+        hit = enemy_game_board.discover_field(x, y)
+        if hit:
+            sunk = fleet.hit(x, y)
+            print("You've hit a ship!")
+            enemy.react_to_hit()
+            if sunk:
+                ship_to_sink = fleet.find_ship(x, y)
+                enemy_game_board.sink_ship(ship_to_sink)
+                print("You've sunk a ship!")
+                enemy.react_to_sink()
+        to_mark_as_empty = enemy.mark_as_empty()
+        if to_mark_as_empty:
+            for field in to_mark_as_empty:
+                m_x, m_y = field
+                marked = enemy_game_board.mark_as_empty(m_x, m_y)
+                # if not marked:
+                #    print("The field you tried to mark has a discovered ship")
+                # (it doesn't really matter since the field cannot be
+                # marked in that case)
         enemy_game_board.print_board(draw_as_enemy=True)
         print(fleet.fleet_to_str(draw_as_enemy=True))
-        whole_command = input("> ")
-        command = whole_command.split()[0]
-        if command == "st":
-            command, x, s_y = whole_command.split()
-            y = int(s_y)
-            hit = enemy_game_board.discover_field(x, y)
-            if hit:
-                sunk = fleet.hit(x, y)
-                print("You've hit a ship!")
-                if sunk:
-                    ship_to_sink = fleet.find_ship(x, y)
-                    enemy_game_board.sink_ship(ship_to_sink)
-                    print("You've sunk a ship!")
-        elif command == "me":
-            command, x, s_y = whole_command.split()
-            y = int(s_y)
-            marked = enemy_game_board.mark_as_empty(x, y)
-            if not marked:
-                print("The field you tried to mark has a discovered ship")
-        else:
-            print("Unknown command")
+        if not fleet.is_alive():
+            print("GG you won!")
+            break
+        input("Next move...")
 
 
 if __name__ == "__main__":
