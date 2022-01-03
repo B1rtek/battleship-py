@@ -89,6 +89,14 @@ class Board:
             board_str += current
         return board_str
 
+    def _clear_board(self):
+        """
+        Sets states of all fields in the board to FieldStatus.NOTHING
+        """
+        for y in range(10):
+            for x in range(10):
+                self._fields[y][x].set_status(FieldStatus.NOTHING)
+
     def place_ship(self, ship: Ship):
         """
         Places a ship on the board by marking all fields it occupies with a
@@ -107,6 +115,7 @@ class Board:
         :param fleet_to_place: a Fleet containing player's ships
         :type fleet_to_place: Fleet
         """
+        self._clear_board()
         for row in self._fields:
             for field in row:
                 field.set_status(FieldStatus.NOTHING)
@@ -168,6 +177,8 @@ class GameBoard:
             self._data_board.set_field_status(x, y, field_status)
         self._visible_board.set_field_status(x, y, field_status)
         if field_status == FieldStatus.SHIP:
+            field_status = FieldStatus.SUNK
+            self._data_board.set_field_status(x, y, field_status)
             return True
         return False
 
@@ -208,4 +219,11 @@ class GameBoard:
         if draw_as_enemy:
             print(self._visible_board)
         else:
-            print(self._data_board)
+            combined_board = Board()
+            for x in "abcdefghij":
+                for y in range(1, 11):
+                    status = self._data_board.get_field_status(x, y)
+                    if status == FieldStatus.NOTHING:
+                        status = self._visible_board.get_field_status(x, y)
+                    combined_board.set_field_status(x, y, status)
+            print(combined_board)

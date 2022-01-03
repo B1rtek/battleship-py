@@ -253,6 +253,7 @@ class Fleet:
         ships are placed. To test if a location for a ship is valid, ships are
         placed on a temporary board.
         """
+        self._ships.clear()
         # True means vertical, just like in the Ship class constructor
         rotations = [choice([True, False]) for _ in range(10)]
         sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
@@ -270,13 +271,6 @@ class Fleet:
             self._ships.append(ship_to_add)
             mark_misses_around(ship_to_add, temp_board)
             temp_board.place_ship(ship_to_add)
-
-    def create_fleet(self):
-        """
-        Lets a player create their own fleet by letting them choose positions
-        of their ships manually.
-        """
-        pass
 
     def hit(self, x: str, y: int):
         """
@@ -430,6 +424,8 @@ def main():
             print(fleet.set_ship_position(x, y))
         elif command == "rot":
             print(fleet.change_ship_rotation())
+        elif command == "rand":
+            fleet.create_random()
         elif command == "done":
             break
         else:
@@ -451,7 +447,7 @@ def main():
     #                 ship_to_sink = fleet.find_ship(x, y)
     #                 enemy_game_board.sink_ship(ship_to_sink)
     #                 print("You've sunk a ship!")
-    #     elif command == "me":
+    #     elif command == "mk":
     #         command, x, s_y = whole_command.split()
     #         y = int(s_y)
     #         marked = enemy_game_board.mark_as_empty(x, y)
