@@ -49,13 +49,15 @@ class Game:
         self._placement_board = Board()
         self._players_turn = True
         self._suspended_messages = []
+        self._quit = False
 
-    def setup_player_board(self):
+    def setup_player_board(self) -> bool:
         """
         Lets player place their ships however they want, and exits when
         player decides that it's done. In UI mode, it just prepares all
         variables needed for player to see what's going on, as everything is
         handled by buttons in the ui itself.
+        :return: False if the player used the quit command, otherwise True
         """
         self._player_fleet = Fleet()
         self._player_fleet.create_random()
@@ -68,6 +70,7 @@ class Game:
                 result = self._interpret_and_execute_command(command)
                 if result:  # the command was "done"
                     break
+        return not self._quit
 
     def _refresh_setup(self):
         """
@@ -115,7 +118,8 @@ class Game:
                        "uppermost or left part\n" \
                        "rand: Places all ships randomly\n" \
                        "done: Ends the setup process and accepts the " \
-                       "current board as the board for the game"
+                       "current board as the board for the game\n" \
+                       "quit: exits to main menu"
         if self._ui is not None:
             pass
             return
@@ -211,6 +215,9 @@ class Game:
             self._setup_random_fleet()
         elif command == "help":
             self._setup_show_help()
+        elif command == "quit":
+            self._quit = True
+            return True
         else:
             self._offer_help()
         return False
@@ -232,7 +239,8 @@ class Game:
         The main game loop which handles player's moves
         """
         self._refresh_board()
-        while self._player_fleet.is_alive() and self._enemy_fleet.is_alive():
+        while self._player_fleet.is_alive() and self._enemy_fleet.is_alive() \
+                and not self._quit:
             if self._players_turn:
                 self._player_move()
             else:
@@ -240,6 +248,8 @@ class Game:
                 self._enemy_move()
             self._refresh_board()
             self._show_suspended_messages()
+        if self._quit:
+            return
         if self._player_fleet.is_alive():
             self._win("You win!")
         else:
@@ -322,7 +332,7 @@ class Game:
             command = whole_command.split()[0]
         except IndexError:
             return "syntax", "0", 0
-        if command == "st" or command == "mk":
+        if command == "st" or command == "mk" or command == "unmk":
             try:
                 command, x, s_y = whole_command.split()
                 y = int(s_y)
@@ -366,6 +376,23 @@ class Game:
             return
         return self._enemy_board.mark_as_empty(x, y)
 
+    def _game_unmark_as_empty(self, button, x: str = "", y: int = 0) -> bool:
+        """
+        An additional method to make game commands accessible to both ui and
+        console versions of the game
+        :param button: ui button, passed as an argument from the button click
+        in the ui
+        :param x: x coordinate of the field, used by the console version
+        :type x: str
+        :param y: y coordinate of the field, used by the console version
+        :type y: int
+        :return: return value of the unmark_as_empty() function
+        """
+        if self._ui is not None:
+            pass
+            return
+        return self._enemy_board.unmark_as_empty(x, y)
+
     def _game_show_help(self):
         """
         Shows all game commands and the correct way to use them
@@ -373,7 +400,9 @@ class Game:
         help_content = "Help:\n" \
                        "st <x> <y>: shoots at the specified field\n" \
                        "mk <x> <y>: marks the specified field on the " \
-                       "enemy's board as empty"
+                       "enemy's board as empty\n" \
+                       "unmk <x> <y>: unmarks the specified field\n" \
+                       "quit: quits the game"
         if self._ui is not None:
             pass
             return
@@ -408,9 +437,17 @@ class Game:
             if not marked:
                 message = "The field you tried to mark has a discovered ship"
                 self._suspended_messages.append(message)
+        elif command == "unmk":
+            self._players_turn = True
+            unmarked = self._game_unmark_as_empty(None, x, y)
+            if not unmarked:
+                message = "The field you tried to unmark isn't marked"
+                self._suspended_messages.append(message)
         elif command == "help":
             self._players_turn = True
             self._game_show_help()
+        elif command == "quit":
+            self._quit = True
         else:
             self._players_turn = True
             self._offer_help()
