@@ -1,5 +1,6 @@
 from copy import deepcopy
 from random import choice
+from typing import List
 
 from enemy import Enemy
 import board
@@ -210,7 +211,7 @@ class Fleet:
     Class containing information about a fleet of ships
     """
 
-    def __init__(self):
+    def __init__(self, ships: List[Ship] = None):
         """
         Initializes a Fleet by creating an empty list of ships. Ships in the
         self._ships list are always put in the order from biggest to smallest,
@@ -219,6 +220,8 @@ class Fleet:
         while modifying the board
         """
         self._ships = []
+        if ships is not None:
+            self._ships = ships
         self._selected_ship = None
 
     def fleet_to_str(self, draw_as_enemy: bool = False):
@@ -401,3 +404,57 @@ class Fleet:
             if not ship.sunk():
                 return True
         return False
+
+    def get_display_fleet(self, display_as_enemy=False) -> "Fleet":
+        """
+        Creates a data fleet representing what the specified player would see
+        :param display_as_enemy: if set to True, the data will reflect what the
+        enemy would see, otherwise it'll look like what the player should see
+        :type display_as_enemy: bool
+        return: a Fleet containing data necessary to draw this board on the
+        screen
+        """
+        if display_as_enemy:
+            display_ships = []
+            for ship in self._ships:
+                if ship.sunk():
+                    display_ships.append(ship)
+                else:
+                    origin = ship.origin()
+                    size = ship.size()
+                    vertical = ship.vertical()
+                    new_ship = Ship(origin, size, vertical)
+                    display_ships.append(new_ship)
+            return Fleet(display_ships)
+        else:
+            return Fleet(self._ships)
+
+    def biggest_ship(self):
+        return self._ships[0]
+
+    def big_ship1(self):
+        return self._ships[1]
+
+    def big_ship2(self):
+        return self._ships[2]
+
+    def medium_ship1(self):
+        return self._ships[3]
+
+    def medium_ship2(self):
+        return self._ships[4]
+
+    def medium_ship3(self):
+        return self._ships[5]
+
+    def small_ship1(self):
+        return self._ships[6]
+
+    def small_ship2(self):
+        return self._ships[7]
+
+    def small_ship3(self):
+        return self._ships[8]
+
+    def small_ship4(self):
+        return self._ships[9]

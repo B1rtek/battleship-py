@@ -247,6 +247,27 @@ class GameBoard:
                     combined_board.set_field_status(x, y, status)
             print(combined_board)
 
+    def get_display_board(self, display_as_enemy: bool = False) -> Board:
+        """
+        Creates a data board representing what the specified player would see
+        :param display_as_enemy: if set to True, the data will reflect what the
+        enemy would see, otherwise it'll look like what the player should see
+        :type display_as_enemy: bool
+        :return: a Board containing data necessary to draw this board on the
+        screen
+        """
+        if display_as_enemy:
+            return self._visible_board
+        else:
+            display_board = Board()
+            for x in "abcdefghij":
+                for y in range(1, 11):
+                    status = self._data_board.get_field_status(x, y)
+                    if status == FieldStatus.NOTHING:
+                        status = self._visible_board.get_field_status(x, y)
+                    display_board.set_field_status(x, y, status)
+            return display_board
+
     def data_board(self):
         return self._data_board
 
