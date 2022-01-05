@@ -1,9 +1,12 @@
 import os
 from time import sleep
 
+from PySide2.QtCore import QSize
+
 from board import Board, GameBoard
 from enemy import Enemy
 from fleet import Fleet, field_on_board
+from gui import BattleshipWindow, load_icon, SquareButton, translate_coords
 
 
 def cls():
@@ -42,14 +45,28 @@ class Game:
         self._player_fleet = None
         self._enemy_fleet = None
         self._enemy = Enemy()
-        self._ui = ui
+        self._ui: BattleshipWindow.ui = ui
         if self._ui is not None:
-            # ui setup
-            pass
+            self._setup_ui()
         self._placement_board = Board()
         self._players_turn = True
         self._suspended_messages = []
         self._quit = False
+
+    def _setup_ui(self):
+        """
+        Creates all necessary arrays of buttons, representing boards
+        """
+        icon = load_icon()
+        for x in range(10):
+            for y in range(10):
+                button = SquareButton()
+                c_x, c_y = translate_coords(x, y)
+                button.setIcon(icon)
+                button.setIconSize(QSize(40, 40))
+                button.setAutoRaise(True)
+                button.setContentsMargins(0, 0, 0, 0)
+                self._ui.grid_setup.addWidget(button, x, y)
 
     def setup_player_board(self) -> bool:
         """
@@ -70,6 +87,7 @@ class Game:
                 result = self._interpret_and_execute_command(command)
                 if result:  # the command was "done"
                     break
+        self._ui.stackedWidget.setCurrentIndex(1)
         return not self._quit
 
     def _refresh_setup(self):
@@ -481,6 +499,7 @@ class Game:
             pass
             return
         print(winner)
+        input()
 
 
 def main():

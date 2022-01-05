@@ -6,7 +6,9 @@ from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtWidgets import QMainWindow, QPushButton, QHBoxLayout, \
     QApplication, QSizePolicy, QToolButton
 
-from ui_battleship import Ui_MainWindow
+from board import UIBoard, Board, GameBoard
+from fleet import Fleet
+from ui_ui_test import Ui_MainWindow
 
 
 # Original code by Oleh Prypin distributed under terms of the CC BY-SA 4.0
@@ -50,27 +52,33 @@ def load_icon():
     return icon
 
 
+def load_icons():
+    return [QIcon(QPixmap("res/nothing.png")), QIcon(QPixmap("res/miss.png")),
+            QIcon(QPixmap("res/ship.png")), QIcon(QPixmap("res/sunk.png"))]
+
+
+def new_fleet(board: Board, ui_board: UIBoard):
+    fleet = Fleet()
+    fleet.create_random()
+    board.place_fleet(fleet)
+    ui_board.update_array()
+
+
 def main(args):
     app = QApplication(args)
     window = QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(window)
-    icon = load_icon()
-    ui.containter.setHorizontalSpacing(0)
-    ui.containter.setVerticalSpacing(0)
-    for x in range(10):
-        for y in range(10):
-            button = SquareButton()
-            c_x, c_y = translate_coords(x, y)
-            button.x_coord = c_x
-            button.y_coord = c_y
-            button.setIcon(icon)
-            button.setIconSize(QSize(40, 40))
-            button.setAutoRaise(True)
-            button.setContentsMargins(0, 0, 0, 0)
-            button.setStyleSheet(
-                "SquareButton::hover\n{\nbackground-color : lightgray;\n}")
-            ui.containter.addWidget(button, x, y)
+    fleet = Fleet()
+    fleet.create_random()
+    test_board = Board()
+    test_board.place_fleet(fleet)
+    test_gboard = GameBoard(test_board)
+    icons = load_icons()
+    ui_board = UIBoard(test_gboard, icons)
+    ui_board.create_array(ui.gridLayout)
+    ui_board.update_array()
+    ui.generate_new.clicked.connect(partial(new_fleet, test_board, ui_board))
     window.show()
     return app.exec_()
 

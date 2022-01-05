@@ -2,8 +2,10 @@ import argparse
 import sys
 from enum import Enum
 
+from PySide2.QtWidgets import QApplication
+
 from game import cls, Game
-from ui_battleship import Ui_MainWindow
+from gui import BattleshipWindow
 
 
 def choose(options_range):
@@ -29,19 +31,25 @@ class Battleship:
     Main application class
     """
 
-    def __init__(self, ui=None):
+    def __init__(self, window=None):
         """
         Initializes the menu and starts it
         """
-        self._ui = ui
+        self._ui = None
+        if window is not None:
+            self._window: BattleshipWindow = window
+            self._ui = self._window.ui
+            self._ui.stackedWidget.setCurrentIndex(0)
         self._quit = False
         self._battleship_state = BattleshipState.MAIN_MENU
+        if self._ui is not None:
+            self._menu_ui_setup()
 
     def start(self):
         """
         Begins the main loop in the console version
         """
-        while not self._quit:
+        while not self._quit and self._ui is None:
             if self._battleship_state == BattleshipState.MAIN_MENU:
                 self._main_menu()
             elif self._battleship_state == BattleshipState.GAME:
@@ -54,7 +62,7 @@ class Battleship:
         Displays the main menu
         """
         if self._ui is not None:
-            pass
+            self._ui.stackedWidget.setCurrentIndex(0)
             return
         main_menu = "Welcome to Battleship!\n" \
                     "1. Play the game\n" \
@@ -75,26 +83,35 @@ class Battleship:
         """
         Starts the game, ends when the game ends
         """
-        game = Game()
+        game = Game(self._ui)
         play = game.setup_player_board()
-        if play:
-            game.start_game()
-        self._battleship_state = BattleshipState.MAIN_MENU
+        if self._ui is None:
+            if play:
+                game.start_game()
+            self._battleship_state = BattleshipState.MAIN_MENU
+
+    def _basic_help(self):
+        """
+        Returns the basic help string, making it accessible to the UI as well
+        as the console version
+        """
+        help_content = "How to play:\n" \
+                       "The objective of this game is to destroy your " \
+                       "opponent's fleet. You and your opponent shoot at " \
+                       "chosen fields on the board, and get information " \
+                       "whether you've hit or sunk you enemy's ship. If " \
+                       "there was a hit, the player gets another move, if " \
+                       "there isn't, the enemy gets to move.\n"
+        return help_content
 
     def _how_to_play(self):
         """
         Shows help
         """
         if self._ui is not None:
-            pass
+            self._ui.stackedWidget.setCurrentIndex(3)
             return
-        help_content = "How to play:\n" \
-                       "The objective of this game is to destroy your " \
-                       "opponent's fleet. You and your opponents shoot at " \
-                       "chosen fields on the board, and get information " \
-                       "whether you've hit or sunk you enemy's ship. If " \
-                       "there was a hit, the player gets another move, if " \
-                       "there isn't, the enemy gets to move.\n"
+        help_content = self._basic_help()
         controls = "In the console version, you perform moves by typing" \
                    "commands. You start a game with an automatically " \
                    "generated fleet that you can move around with commands\n" \
@@ -126,6 +143,16 @@ class Battleship:
         input()
         self._battleship_state = BattleshipState.MAIN_MENU
 
+    def _menu_ui_setup(self):
+        self._ui.button_play.clicked.connect(self._start_game)
+        self._ui.button_htp.clicked.connect(self._how_to_play)
+        self._ui.button_quit_game.clicked.connect(self._quit_game)
+        self._ui.htp_content.setText(self._basic_help())
+        self._ui.button_main_menu.clicked.connect(self._main_menu)
+
+    def _quit_game(self):
+        sys.exit(0)
+
 
 def main(argv):
     parser = argparse.ArgumentParser()
@@ -135,10 +162,14 @@ def main(argv):
     args = parser.parse_args(argv[1:])
     if args.no_ui:
         battleship = Battleship()
+        battleship.start()
     else:
-        ui = Ui_MainWindow()
+        app = QApplication()
+        ui = BattleshipWindow()
         battleship = Battleship(ui)
-    battleship.start()
+        ui.show()
+        battleship.start()
+        return app.exec_()
 
 
 if __name__ == "__main__":
