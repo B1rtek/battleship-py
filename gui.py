@@ -2,8 +2,6 @@ from PySide2.QtCore import Qt
 from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtWidgets import QMainWindow, QToolButton, QSizePolicy
 
-from ui_battleship import Ui_MainWindow
-
 
 def load_icon():
     filename = "tile.png"
@@ -33,14 +31,3 @@ class SquareButton(QToolButton):
 
     def resizeEvent(self, e):
         self.setMinimumWidth(self.height())
-
-
-class BattleshipWindow(QMainWindow):
-    """
-    The game window class
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
