@@ -3,8 +3,11 @@ import os
 import sys
 from enum import Enum
 
+from PySide2.QtWidgets import QApplication
+
 from fleet_creator import FleetCreator
-from gamev2 import Gamev2
+from game import Game
+from ui_battleship import Ui_Battleship
 
 
 class AppState(Enum):
@@ -52,7 +55,7 @@ class BattleshipCMD:
         Initializes classes handling the actual game
         """
         self._fleet_creator = FleetCreator()
-        self._game = Gamev2()
+        self._game = Game()
         self._state = AppState.MAIN_MENU
         self._quit = False
         self._prompt = "> "
@@ -307,8 +310,16 @@ class BattleshipCMD:
             self._execute(command, x, y)
 
 
-class BattleshipGUI:
-    pass
+class BattleshipGUI(Ui_Battleship):
+    """
+    Class operating the game in the GUI version
+    """
+
+    def __init__(self):
+        pass
+
+    def start(self):
+
 
 
 def main(argv):
@@ -321,6 +332,7 @@ def main(argv):
         battleship = BattleshipCMD()
         battleship.start()
     else:
+        app = QApplication(argv)
         battleship = BattleshipGUI()
         battleship.start()
 

@@ -2,8 +2,11 @@ from copy import deepcopy
 from random import choice
 from typing import List
 
+from PySide2.QtWidgets import QGridLayout
+
 from enemy import Enemy
 import board
+from gui import SquareButton
 
 
 class ShipSegment:
@@ -458,3 +461,28 @@ class Fleet:
 
     def small_ship4(self):
         return self._ships[9]
+
+
+class UIFleet:
+    """
+    Representation of Fleet() in the UI, most likely temporary
+    """
+
+    def __init__(self, fleet: Fleet):
+        self._game_board = fleet
+        self._button_array = []
+
+    def create_array(self, parent_grid_layout: QGridLayout):
+        """
+        Creates an array of buttons in the specified QGridLayout
+        :param parent_grid_layout: QGridLayout in which the array will be
+        created
+        :type parent_grid_layout: QGridLayout
+        """
+        for y in range(2):
+            row = []
+            for x in range(14):
+                button = SquareButton()
+                row.append(button)
+                parent_grid_layout.addWidget(button, y, x)
+            self._button_array.append(row)

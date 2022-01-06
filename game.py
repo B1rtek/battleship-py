@@ -3,7 +3,7 @@ from enemy import Enemy
 from fleet import Fleet, field_on_board
 
 
-class Gamev2:
+class Game:
     """
     Handles the game
     """
