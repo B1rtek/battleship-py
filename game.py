@@ -1,3 +1,5 @@
+import time
+
 from board import GameBoard, Board
 from enemy import Enemy
 from fleet import Fleet, field_on_board
@@ -16,7 +18,7 @@ class Game:
         self._enemy_board = None
         self._player_fleet = None
         self._enemy_fleet = None
-        self._enemy = Enemy()
+        self._enemy = None
         self._players_turn = True
         self._won = False
         self._messages = []
@@ -30,6 +32,7 @@ class Game:
         :type player_fleet: Fleet
         """
         self._player_board = GameBoard(player_board)
+        self._enemy = Enemy()
         self._player_fleet = player_fleet
         self._create_enemy_fleet()
         self._players_turn = True
@@ -117,7 +120,7 @@ class Game:
         """
         Adds the message about enemy missing the shot to the messages list
         """
-        self._messages.append("Enemy has missed.")
+        self._messages.append("Enemy has missed. It's your turn now.")
 
     def _message_enemy_win(self):
         """
@@ -168,7 +171,8 @@ class Game:
         """
         Adds the message about player missing the shot to the messages list
         """
-        self._messages.append("You missed.")
+        self._messages.append("You missed. Press to continue to the next "
+                              "enemy move")
 
     def _message_player_win(self):
         """
@@ -247,7 +251,6 @@ class Game:
         Handles the computer enemy's move
         :return: True if the enemy hit player's ship, otherwise false.
         """
-        self._players_turn = True
         target = self._enemy.shoot()
         x, y = target
         hit = self._player_board.discover_field(x, y)
@@ -263,13 +266,13 @@ class Game:
                 self._enemy.react_to_sink()
                 self._check_win()
         else:
+            self._players_turn = True
             self._message_enemy_miss()
         to_mark_as_empty = self._enemy.mark_as_empty()
         if to_mark_as_empty:
             for field in to_mark_as_empty:
                 m_x, m_y = field
                 self._player_board.mark_as_empty(m_x, m_y)
-
         return hit
 
     def _check_win(self):

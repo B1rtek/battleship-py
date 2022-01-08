@@ -1,10 +1,14 @@
 import argparse
 import os
 import sys
+import time
 from enum import Enum
+from functools import partial
 
-from PySide2.QtWidgets import QApplication
+from PySide2.QtWidgets import QApplication, QMainWindow
 
+from board import GameBoard, Board, FieldStatus
+from gui import UIBoard, load_icons
 from fleet_creator import FleetCreator
 from game import Game
 from ui_battleship import Ui_Battleship
@@ -310,16 +314,132 @@ class BattleshipCMD:
             self._execute(command, x, y)
 
 
-class BattleshipGUI(Ui_Battleship):
+class BattleshipWindow(QMainWindow):
     """
     Class operating the game in the GUI version
     """
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_Battleship()
+        self.ui.setupUi(self)
+        self._fleet_creator = FleetCreator()
+        self._game = Game()
+        self._fleet_creator_board = UIBoard()
+        self._game_player_board = UIBoard()
+        self._game_enemy_board = UIBoard()
+        self._setup_boards()
+        self._link_buttons()
+
+    def mousePressEvent(self, QMouseEvent):
+        if not self._game.players_turn():
+            self._game.enemy_move()
+            self._game_refresh()
+        if self._game.won():
+            self.ui.stackedWidget.setCurrentIndex(0)
+
+    def _setup_boards(self):
+        icons = load_icons()
+        self._fleet_creator_board.set_icons(icons)
+        self._game_player_board.set_icons(icons)
+        self._game_enemy_board.set_icons(icons)
+        self._fleet_creator_board.define_left_click_action(
+            self._fleet_creator_left_click)
+        self._fleet_creator_board.define_right_click_action(self._nop)
+        self._game_player_board.define_left_click_action(self._nop)
+        self._game_player_board.define_right_click_action(self._nop)
+        self._game_enemy_board.define_left_click_action(
+            self._game_left_click)
+        self._game_enemy_board.define_right_click_action(
+            self._game_right_click)
+        self._fleet_creator_board.place_button_array(self.ui.grid_setup_board)
+        self._game_player_board.place_button_array(
+            self.ui.grid_game_player_board)
+        self._game_enemy_board.place_button_array(
+            self.ui.grid_game_enemy_board)
+
+    def _link_buttons(self):
+        """
+        Assigns functions to different buttons
+        """
+        self.ui.button_main_play.clicked.connect(self._fleet_creator_start)
+        self.ui.button_main_htp.clicked.connect(self._htp_show)
+        self.ui.button_main_quit.clicked.connect(partial(sys.exit, 0))
+        self.ui.button_setup_exit.clicked.connect(self._return_to_main)
+        self.ui.button_setup_rand.clicked.connect(self._fleet_creator_rand)
+        self.ui.button_setup_rot.clicked.connect(self._fleet_creator_rot)
+        self.ui.button_setup_done.clicked.connect(self._fleet_creator_done)
+        self.ui.button_game_main.clicked.connect(self._return_to_main)
+        self.ui.button_htp_back.clicked.connect(self._return_to_main)
+
+    def _nop(self, x, y):
         pass
 
-    def start(self):
+    def _fleet_creator_start(self):
+        self._fleet_creator.start()
+        self._fleet_creator_refresh()
+        self.ui.stackedWidget.setCurrentIndex(1)
 
+    def _htp_show(self):
+        self.ui.stackedWidget.setCurrentIndex(3)
+
+    def _return_to_main(self):
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def _fleet_creator_left_click(self, x: str, y: int):
+        if self._fleet_creator.contains_not_selected_ship(x, y):
+            self._fleet_creator.select_ship(x, y)
+        else:
+            self._fleet_creator.set_ship_position(x, y)
+        self._fleet_creator_refresh()
+
+    def _fleet_creator_rand(self):
+        self._fleet_creator.random_fleet()
+        self._fleet_creator_refresh()
+
+    def _fleet_creator_rot(self):
+        self._fleet_creator.change_ship_rotation()
+        self._fleet_creator_refresh()
+
+    def _fleet_creator_done(self):
+        board, fleet = self._fleet_creator.get_setup()
+        self._game.start_game(board, fleet)
+        self._game_refresh()
+        self.ui.game_plain_text_edit_log.clear()
+        self.ui.stackedWidget.setCurrentIndex(2)
+
+    def _fleet_creator_refresh(self):
+        board = self._fleet_creator.get_board_display()
+        ship = self._fleet_creator.get_selected_ship()
+        self._fleet_creator_board.update_board(board, ship)
+
+    def _game_left_click(self, x: str, y: int):
+        if self._game.won():
+            self.ui.stackedWidget.setCurrentIndex(0)
+        if self._game.players_turn():
+            self._game.discover_field(x, y)
+        else:
+            self._game.enemy_move()
+        self._game_refresh()
+
+    def _game_right_click(self, x: str, y: int):
+        status = self._game.get_enemy_board_display().get_field_status(x, y)
+        if status != FieldStatus.MISS:
+            self._game.mark_field(x, y)
+        else:
+            self._game.unmark_field(x, y)
+        self._game_refresh()
+
+    def _game_refresh(self):
+        player_board = self._game.get_player_board_display()
+        enemy_board = self._game.get_enemy_board_display()
+        self._game_player_board.update_board(player_board, None)
+        self._game_enemy_board.update_board(enemy_board, None)
+        messages = self._game.get_display_messages()
+        for message in messages:
+            self.ui.game_plain_text_edit_log.insertPlainText(message)
+        scrollbar = self.ui.game_plain_text_edit_log.verticalScrollBar()
+        scrollbar.setValue(scrollbar.maximum()-2)
 
 
 def main(argv):
@@ -333,8 +453,9 @@ def main(argv):
         battleship.start()
     else:
         app = QApplication(argv)
-        battleship = BattleshipGUI()
-        battleship.start()
+        battleship_window = BattleshipWindow()
+        battleship_window.show()
+        return app.exec_()
 
 
 if __name__ == "__main__":

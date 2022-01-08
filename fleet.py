@@ -2,11 +2,7 @@ from copy import deepcopy
 from random import choice
 from typing import List
 
-from PySide2.QtWidgets import QGridLayout
-
-from enemy import Enemy
 import board
-from gui import SquareButton
 
 
 class ShipSegment:
@@ -144,6 +140,12 @@ class Ship:
     def origin(self):
         return self._origin
 
+    def get_segment_coordinates(self):
+        segments = []
+        for segment in self._segments:
+            segments.append(segment.position())
+        return segments
+
 
 valid_x_coords = "abcdefghij"
 
@@ -260,6 +262,7 @@ class Fleet:
         placed on a temporary board.
         """
         self._ships.clear()
+        self._selected_ship = None
         # True means vertical, just like in the Ship class constructor
         rotations = [choice([True, False]) for _ in range(10)]
         sizes = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1]
@@ -308,20 +311,19 @@ class Fleet:
                 return ship
         return None
 
-    def select_ship(self, x: str, y: int) -> str:
+    def select_ship(self, x: str, y: int) -> bool:
         """
         Selects a ship that can be moved or rotated while setting up the fleet
         :param x: x coordinate of the field
         :type x: str
         :param y: y coordinate of the field
         :type y: int
-        :return: A message stating that a ship has been selected or that it
-        wasn't
+        :return: True if ship was selected, False otherwise
         """
         self._selected_ship = self.find_ship(x, y)
         if self._selected_ship is not None:
-            return "A ship has been selected"
-        return "No ship was found on these coordinates"
+            return True
+        return False
 
     def set_ship_position(self, x: str, y: int) -> str:
         """
@@ -462,27 +464,7 @@ class Fleet:
     def small_ship4(self):
         return self._ships[9]
 
+    def selected_ship(self):
+        return self._selected_ship
 
-class UIFleet:
-    """
-    Representation of Fleet() in the UI, most likely temporary
-    """
 
-    def __init__(self, fleet: Fleet):
-        self._game_board = fleet
-        self._button_array = []
-
-    def create_array(self, parent_grid_layout: QGridLayout):
-        """
-        Creates an array of buttons in the specified QGridLayout
-        :param parent_grid_layout: QGridLayout in which the array will be
-        created
-        :type parent_grid_layout: QGridLayout
-        """
-        for y in range(2):
-            row = []
-            for x in range(14):
-                button = SquareButton()
-                row.append(button)
-                parent_grid_layout.addWidget(button, y, x)
-            self._button_array.append(row)

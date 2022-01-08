@@ -1,16 +1,14 @@
 from enum import Enum
 
 from fleet import Ship, Fleet
-from PySide2.QtWidgets import QGridLayout
-
-from gui import SquareButton
 
 
 class FieldStatus(Enum):
     NOTHING = 0,  # default status for undiscovered fields
     MISS = 1,  # set when a shot missed because there was no ship on the field
     SHIP = 2,  # indicates that a part of a ship is located on this field
-    SUNK = 3  # indicates that this field contains a sunken ship
+    SUNK = 3,  # indicates that this field contains a sunken ship
+    SELECTED = 4  # a special state used in the GUI
 
 
 class Field:
@@ -92,7 +90,7 @@ class Board:
             board_str += current
         return board_str
 
-    def _clear_board(self):
+    def clear_board(self):
         """
         Sets states of all fields in the board to FieldStatus.NOTHING
         """
@@ -118,7 +116,7 @@ class Board:
         :param fleet_to_place: a Fleet containing player's ships
         :type fleet_to_place: Fleet
         """
-        self._clear_board()
+        self.clear_board()
         for row in self._fields:
             for field in row:
                 field.set_status(FieldStatus.NOTHING)
@@ -275,51 +273,3 @@ class GameBoard:
         return self._visible_board
 
 
-class UIBoard:
-    """
-    Representation of GameBoard() in the UI
-    """
-
-    def __init__(self, game_board: GameBoard, icons: list):
-        self._game_board = game_board
-        self._icons = {
-            FieldStatus.NOTHING: icons[0],
-            FieldStatus.MISS: icons[1],
-            FieldStatus.SHIP: icons[2],
-            FieldStatus.SUNK: icons[3]
-        }
-        self._button_array = []
-
-    def create_array(self, parent_grid_layout: QGridLayout):
-        """
-        Creates an array of buttons in the specified QGridLayout
-        :param parent_grid_layout: QGridLayout in which the array will be
-        created
-        :type parent_grid_layout: QGridLayout
-        """
-        for y in range(10):
-            row = []
-            for x in range(10):
-                button = SquareButton()
-                row.append(button)
-                parent_grid_layout.addWidget(button, x, y)
-            self._button_array.append(row)
-
-    def update_array(self, draw_as_enemy: bool = False):
-        if draw_as_enemy:
-            for x in "abcdefghij":
-                for y in range(1, 11):
-                    c_x, c_y = translate_coordinates(x, y)
-                    status = self._game_board.visible_board().get_field_status(
-                        x, y)
-                    self._button_array[c_x][c_y].setIcon(self._icons[status])
-        else:
-            for x in "abcdefghij":
-                for y in range(1, 11):
-                    c_x, c_y = translate_coordinates(x, y)
-                    status = self._game_board.data_board().get_field_status(
-                        x, y)
-                    if status == FieldStatus.NOTHING:
-                        status = self._game_board.visible_board().\
-                            get_field_status(x, y)
-                    self._button_array[c_x][c_y].setIcon(self._icons[status])

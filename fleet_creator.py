@@ -88,6 +88,7 @@ class FleetCreator:
         result = self._fleet.select_ship(x, y)
         if result:
             self._message_ship_selected()
+        return result
 
     def set_ship_position(self, x: str, y: int):
         """
@@ -125,3 +126,19 @@ class FleetCreator:
         Handles the help command output
         """
         self._message_setup_help()
+
+    def get_selected_ship(self):
+        """
+        Returns the selected ship from the fleet
+        :return: The selected ship in the setup fleet
+        """
+        return self._fleet.selected_ship()
+
+    def contains_not_selected_ship(self, x: str, y: int):
+        if self._fleet.selected_ship() is None:
+            return True
+        if self._fleet.selected_ship().check_if_belongs(x, y):
+            return False
+        if self._fleet.find_ship(x, y) is not None:
+            return True
+        return False

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'test.ui'
+## Form generated from reading UI file 'battleship.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -17,7 +17,7 @@ class Ui_Battleship(object):
     def setupUi(self, Battleship):
         if not Battleship.objectName():
             Battleship.setObjectName(u"Battleship")
-        Battleship.resize(528, 504)
+        Battleship.resize(528, 512)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -387,11 +387,18 @@ class Ui_Battleship(object):
 
         self.verticalLayout_12.addLayout(self.horizontalLayout_12)
 
-        self.plainTextEdit = QPlainTextEdit(self.page_game)
-        self.plainTextEdit.setObjectName(u"plainTextEdit")
-        self.plainTextEdit.setReadOnly(True)
+        self.game_plain_text_edit_log = QPlainTextEdit(self.page_game)
+        self.game_plain_text_edit_log.setObjectName(u"game_plain_text_edit_log")
+        self.game_plain_text_edit_log.setAcceptDrops(False)
+        self.game_plain_text_edit_log.setInputMethodHints(Qt.ImhNone)
+        self.game_plain_text_edit_log.setFrameShape(QFrame.StyledPanel)
+        self.game_plain_text_edit_log.setSizeAdjustPolicy(QAbstractScrollArea.AdjustToContents)
+        self.game_plain_text_edit_log.setUndoRedoEnabled(False)
+        self.game_plain_text_edit_log.setLineWrapMode(QPlainTextEdit.NoWrap)
+        self.game_plain_text_edit_log.setReadOnly(True)
+        self.game_plain_text_edit_log.setTextInteractionFlags(Qt.NoTextInteraction)
 
-        self.verticalLayout_12.addWidget(self.plainTextEdit)
+        self.verticalLayout_12.addWidget(self.game_plain_text_edit_log)
 
         self.verticalLayout_12.setStretch(0, 3)
         self.verticalLayout_12.setStretch(1, 1)

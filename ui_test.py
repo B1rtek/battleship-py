@@ -6,8 +6,9 @@ from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtWidgets import QMainWindow, QPushButton, QHBoxLayout, \
     QApplication, QSizePolicy, QToolButton
 
-from board import UIBoard, Board, GameBoard
-from fleet import Fleet, UIFleet
+from board import Board, GameBoard
+from fleet import Fleet
+from gui import UIFleet, UIBoard
 from ui_battleship import Ui_Battleship
 
 
