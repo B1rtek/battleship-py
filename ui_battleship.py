@@ -17,7 +17,7 @@ class Ui_Battleship(object):
     def setupUi(self, Battleship):
         if not Battleship.objectName():
             Battleship.setObjectName(u"Battleship")
-        Battleship.resize(528, 512)
+        Battleship.resize(630, 500)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -112,16 +112,6 @@ class Ui_Battleship(object):
         self.page_fleet_creator.setObjectName(u"page_fleet_creator")
         self.verticalLayout = QVBoxLayout(self.page_fleet_creator)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.label_setup_title = QLabel(self.page_fleet_creator)
-        self.label_setup_title.setObjectName(u"label_setup_title")
-        sizePolicy2.setHeightForWidth(self.label_setup_title.sizePolicy().hasHeightForWidth())
-        self.label_setup_title.setSizePolicy(sizePolicy2)
-        font1 = QFont()
-        font1.setPointSize(16)
-        self.label_setup_title.setFont(font1)
-
-        self.verticalLayout.addWidget(self.label_setup_title, 0, Qt.AlignHCenter)
-
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.button_setup_exit = QPushButton(self.page_fleet_creator)
@@ -144,6 +134,19 @@ class Ui_Battleship(object):
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
+
+        self.label_setup_title = QLabel(self.page_fleet_creator)
+        self.label_setup_title.setObjectName(u"label_setup_title")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.label_setup_title.sizePolicy().hasHeightForWidth())
+        self.label_setup_title.setSizePolicy(sizePolicy5)
+        font1 = QFont()
+        font1.setPointSize(16)
+        self.label_setup_title.setFont(font1)
+
+        self.verticalLayout.addWidget(self.label_setup_title, 0, Qt.AlignHCenter)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -235,9 +238,16 @@ class Ui_Battleship(object):
         self.horizontalLayout_12 = QHBoxLayout()
         self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
         self.verticalLayout_10 = QVBoxLayout()
+        self.verticalLayout_10.setSpacing(0)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.verticalLayout_6 = QVBoxLayout()
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.label_player_board = QLabel(self.page_game)
+        self.label_player_board.setObjectName(u"label_player_board")
+        self.label_player_board.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_6.addWidget(self.label_player_board, 0, Qt.AlignHCenter)
+
         self.verticalSpacer_8 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_8)
@@ -261,7 +271,7 @@ class Ui_Battleship(object):
 
         self.verticalLayout_6.addLayout(self.horizontalLayout_8)
 
-        self.verticalSpacer_9 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_9 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         self.verticalLayout_6.addItem(self.verticalSpacer_9)
 
@@ -270,7 +280,7 @@ class Ui_Battleship(object):
 
         self.verticalLayout_9 = QVBoxLayout()
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalSpacer_14 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_14 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         self.verticalLayout_9.addItem(self.verticalSpacer_14)
 
@@ -281,8 +291,9 @@ class Ui_Battleship(object):
         self.horizontalLayout_11.addItem(self.horizontalSpacer_16)
 
         self.grid_game_player_fleet = QGridLayout()
-        self.grid_game_player_fleet.setSpacing(0)
         self.grid_game_player_fleet.setObjectName(u"grid_game_player_fleet")
+        self.grid_game_player_fleet.setHorizontalSpacing(0)
+        self.grid_game_player_fleet.setVerticalSpacing(6)
 
         self.horizontalLayout_11.addLayout(self.grid_game_player_fleet)
 
@@ -305,20 +316,27 @@ class Ui_Battleship(object):
 
         self.line = QFrame(self.page_game)
         self.line.setObjectName(u"line")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
-        self.line.setSizePolicy(sizePolicy5)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
+        self.line.setSizePolicy(sizePolicy6)
         self.line.setFrameShape(QFrame.VLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
         self.horizontalLayout_12.addWidget(self.line)
 
         self.verticalLayout_11 = QVBoxLayout()
+        self.verticalLayout_11.setSpacing(0)
         self.verticalLayout_11.setObjectName(u"verticalLayout_11")
         self.verticalLayout_7 = QVBoxLayout()
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.label_enemy_board = QLabel(self.page_game)
+        self.label_enemy_board.setObjectName(u"label_enemy_board")
+        self.label_enemy_board.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_7.addWidget(self.label_enemy_board, 0, Qt.AlignHCenter)
+
         self.verticalSpacer_10 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_7.addItem(self.verticalSpacer_10)
@@ -342,7 +360,7 @@ class Ui_Battleship(object):
 
         self.verticalLayout_7.addLayout(self.horizontalLayout_9)
 
-        self.verticalSpacer_11 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_11 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         self.verticalLayout_7.addItem(self.verticalSpacer_11)
 
@@ -351,7 +369,7 @@ class Ui_Battleship(object):
 
         self.verticalLayout_8 = QVBoxLayout()
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.verticalSpacer_12 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer_12 = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
         self.verticalLayout_8.addItem(self.verticalSpacer_12)
 
@@ -362,8 +380,9 @@ class Ui_Battleship(object):
         self.horizontalLayout_10.addItem(self.horizontalSpacer_15)
 
         self.grid_game_enemy_fleet = QGridLayout()
-        self.grid_game_enemy_fleet.setSpacing(0)
         self.grid_game_enemy_fleet.setObjectName(u"grid_game_enemy_fleet")
+        self.grid_game_enemy_fleet.setHorizontalSpacing(0)
+        self.grid_game_enemy_fleet.setVerticalSpacing(6)
 
         self.horizontalLayout_10.addLayout(self.grid_game_enemy_fleet)
 
@@ -434,11 +453,11 @@ class Ui_Battleship(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.label_htp_title = QLabel(self.page_htp)
         self.label_htp_title.setObjectName(u"label_htp_title")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.label_htp_title.sizePolicy().hasHeightForWidth())
-        self.label_htp_title.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.label_htp_title.sizePolicy().hasHeightForWidth())
+        self.label_htp_title.setSizePolicy(sizePolicy7)
         self.label_htp_title.setFont(font)
 
         self.verticalLayout_4.addWidget(self.label_htp_title, 0, Qt.AlignHCenter)
@@ -479,7 +498,7 @@ class Ui_Battleship(object):
         Battleship.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(Battleship)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 528, 21))
+        self.menubar.setGeometry(QRect(0, 0, 630, 21))
         Battleship.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(Battleship)
         self.statusbar.setObjectName(u"statusbar")
@@ -487,7 +506,7 @@ class Ui_Battleship(object):
 
         self.retranslateUi(Battleship)
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
 
 
         QMetaObject.connectSlotsByName(Battleship)
@@ -499,12 +518,14 @@ class Ui_Battleship(object):
         self.button_main_play.setText(QCoreApplication.translate("Battleship", u"Play", None))
         self.button_main_htp.setText(QCoreApplication.translate("Battleship", u"Help", None))
         self.button_main_quit.setText(QCoreApplication.translate("Battleship", u"Quit", None))
-        self.label_setup_title.setText(QCoreApplication.translate("Battleship", u"Set up your fleet", None))
         self.button_setup_exit.setText(QCoreApplication.translate("Battleship", u"Back", None))
+        self.label_setup_title.setText(QCoreApplication.translate("Battleship", u"Set up your fleet", None))
         self.button_setup_rand.setText(QCoreApplication.translate("Battleship", u"Generate random", None))
         self.button_setup_rot.setText(QCoreApplication.translate("Battleship", u"Rotate", None))
         self.button_setup_done.setText(QCoreApplication.translate("Battleship", u"Done", None))
         self.button_game_main.setText(QCoreApplication.translate("Battleship", u"Main Menu", None))
+        self.label_player_board.setText(QCoreApplication.translate("Battleship", u"Your board", None))
+        self.label_enemy_board.setText(QCoreApplication.translate("Battleship", u"Enemy's board", None))
         self.label_htp_title.setText(QCoreApplication.translate("Battleship", u"How to play", None))
         self.label_htp_tutorial.setText(QCoreApplication.translate("Battleship", u"The goal of the game is to destroy your enemy's fleet.\n"
 "But first, in order to fight them, you need your own fleet - which you prepare on the setup page.\n"

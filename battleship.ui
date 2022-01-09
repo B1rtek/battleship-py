@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>528</width>
-    <height>512</height>
+    <width>630</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,7 +36,7 @@
        </size>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page_main_menu">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -192,24 +192,6 @@
       </widget>
       <widget class="QWidget" name="page_fleet_creator">
        <layout class="QVBoxLayout" name="verticalLayout">
-        <item alignment="Qt::AlignHCenter">
-         <widget class="QLabel" name="label_setup_title">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>16</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Set up your fleet</string>
-          </property>
-         </widget>
-        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
@@ -252,6 +234,24 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item alignment="Qt::AlignHCenter">
+         <widget class="QLabel" name="label_setup_title">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>16</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Set up your fleet</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
@@ -415,8 +415,21 @@
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_6">
+                    <item alignment="Qt::AlignHCenter">
+                     <widget class="QLabel" name="label_player_board">
+                      <property name="text">
+                       <string>Your board</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <spacer name="verticalSpacer_8">
                       <property name="orientation">
@@ -472,10 +485,13 @@
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
                       </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Minimum</enum>
+                      </property>
                       <property name="sizeHint" stdset="0">
                        <size>
                         <width>20</width>
-                        <height>40</height>
+                        <height>20</height>
                        </size>
                       </property>
                      </spacer>
@@ -490,7 +506,7 @@
                        <enum>Qt::Vertical</enum>
                       </property>
                       <property name="sizeType">
-                       <enum>QSizePolicy::Expanding</enum>
+                       <enum>QSizePolicy::Minimum</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -517,8 +533,11 @@
                       </item>
                       <item>
                        <layout class="QGridLayout" name="grid_game_player_fleet">
-                        <property name="spacing">
+                        <property name="horizontalSpacing">
                          <number>0</number>
+                        </property>
+                        <property name="verticalSpacing">
+                         <number>6</number>
                         </property>
                        </layout>
                       </item>
@@ -572,8 +591,21 @@
                 </item>
                 <item>
                  <layout class="QVBoxLayout" name="verticalLayout_11">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                    <item alignment="Qt::AlignHCenter">
+                     <widget class="QLabel" name="label_enemy_board">
+                      <property name="text">
+                       <string>Enemy's board</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
                     <item>
                      <spacer name="verticalSpacer_10">
                       <property name="orientation">
@@ -629,10 +661,13 @@
                       <property name="orientation">
                        <enum>Qt::Vertical</enum>
                       </property>
+                      <property name="sizeType">
+                       <enum>QSizePolicy::Minimum</enum>
+                      </property>
                       <property name="sizeHint" stdset="0">
                        <size>
                         <width>20</width>
-                        <height>40</height>
+                        <height>20</height>
                        </size>
                       </property>
                      </spacer>
@@ -647,7 +682,7 @@
                        <enum>Qt::Vertical</enum>
                       </property>
                       <property name="sizeType">
-                       <enum>QSizePolicy::Expanding</enum>
+                       <enum>QSizePolicy::Minimum</enum>
                       </property>
                       <property name="sizeHint" stdset="0">
                        <size>
@@ -673,9 +708,12 @@
                        </spacer>
                       </item>
                       <item>
-                       <layout class="QGridLayout" name="grid_game_enemy_fleet">
-                        <property name="spacing">
+                       <layout class="QGridLayout" name="grid_game_enemy_fleet" columnstretch="0">
+                        <property name="horizontalSpacing">
                          <number>0</number>
+                        </property>
+                        <property name="verticalSpacing">
+                         <number>6</number>
                         </property>
                        </layout>
                       </item>
@@ -900,7 +938,7 @@ The game screen consists of two boards and two sets of fleet displays, and a mes
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>528</width>
+     <width>630</width>
      <height>21</height>
     </rect>
    </property>

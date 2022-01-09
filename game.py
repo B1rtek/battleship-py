@@ -1,6 +1,6 @@
 import time
 
-from board import GameBoard, Board
+from board import GameBoard, Board, FieldStatus
 from enemy import Enemy
 from fleet import Fleet, field_on_board
 
@@ -70,7 +70,7 @@ class Game:
         """
         Returns enemy's fleet
         """
-        return self._enemy_fleet.get_display_fleet(display_as_enemy=False)
+        return self._enemy_fleet.get_display_fleet(display_as_enemy=True)
 
     def get_display_messages(self):
         """
@@ -180,6 +180,13 @@ class Game:
         """
         self._messages.append("You win!")
 
+    def _message_field_already_discovered(self):
+        """
+        Adds the message about player trying to disover an already discovered
+        field to the messages list
+        """
+        self._messages.append("This field has been already discovered")
+
     def discover_field(self, x: str, y: int) -> bool:
         """
         Handles the field discovery process for the player
@@ -194,6 +201,9 @@ class Game:
             return False
         if not field_on_board((x, y)):
             self._message_invalid_coordinates()
+            return True
+        if not self._enemy_board.field_undiscovered(x, y):
+            self._message_field_already_discovered()
             return True
         self._players_turn = False
         hit = self._enemy_board.discover_field(x, y)
@@ -291,4 +301,3 @@ class Game:
 
     def won(self) -> bool:
         return self._won
-

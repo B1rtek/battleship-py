@@ -34,6 +34,9 @@ class ShipSegment:
     def sink(self):
         self._sunk = True
 
+    def unsink(self):
+        self._sunk = False
+
     def sunk(self):
         return self._sunk
 

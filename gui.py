@@ -71,11 +71,6 @@ class BoardButton(QToolButton):
         return self._x, self._y
 
 
-class UIBoardMode(Enum):
-    FLEET_CREATOR = 0,
-    GAME = 1
-
-
 class UIBoard:
     """
     Representation of GameBoard() in the UI
@@ -86,7 +81,6 @@ class UIBoard:
         Initializes all values and creates a button array
         """
         self._cached_board = Board()
-        self._mode = UIBoardMode.FLEET_CREATOR
         self._icons = {}
         self._button_array = []
         self._create_button_array()
@@ -162,21 +156,88 @@ class UIFleet:
     Representation of Fleet() in the UI, most likely temporary
     """
 
-    def __init__(self, fleet: Fleet):
-        self._game_board = fleet
+    def __init__(self):
+        self._cached_fleet = Fleet()
+        self._icons = {}
         self._button_array = []
+        self._positions_array = [
+            [(0, 0), (1, 0), (2, 0), (3, 0)],
+            [(5, 0), (6, 0), (7, 0)],
+            [(9, 0), (10, 0), (11, 0)],
+            [(0, 1), (1, 1)],
+            [(3, 1), (4, 1)],
+            [(12, 1), (13, 1)],
+            [(6, 1)],
+            [(8, 1)],
+            [(10, 1)],
+            [(13, 0)]
+        ]
+        self._create_button_array()
+        self._initialize_cached_fleet()
 
-    def create_array(self, parent_grid_layout: QGridLayout):
+    def _create_button_array(self):
         """
-        Creates an array of buttons in the specified QGridLayout
-        :param parent_grid_layout: QGridLayout in which the array will be
-        created
-        :type parent_grid_layout: QGridLayout
+        Creates the button array which will be shown in the GUI
         """
-        for y in range(2):
+        for ship_pos_list in self._positions_array:
             row = []
-            for x in range(14):
+            for _ in ship_pos_list:
                 button = BoardButton()
+                button.set_game_coordinates("", 0)
                 row.append(button)
-                parent_grid_layout.addWidget(button, y, x)
             self._button_array.append(row)
+
+    def _initialize_cached_fleet(self):
+        self._cached_fleet.create_random()
+        ships = self._cached_fleet.ships()
+        for ship in ships:
+            for segment in ship.segments():
+                segment.sink()
+
+    def set_icons(self, icons_dict: dict):
+        """
+        Sets the provided icons dictionary as the one used by this board
+        :param icons_dict: Dictionary containing all icons needed
+        :type icons_dict: dict
+        """
+        self._icons = icons_dict
+
+    def update_fleet_display(self, display_fleet: Fleet):
+        """
+        Updates the displayed fleet
+        :param display_fleet: display fleet from Game
+        """
+        ships = display_fleet.ships()
+        cached_ships = self._cached_fleet.ships()
+        for ship_num, row in enumerate(self._positions_array):
+            segments = ships[ship_num].segments()
+            cached_segments = cached_ships[ship_num].segments()
+            for segment_num, ui_segment, in enumerate(row):
+                segment = segments[segment_num]
+                cached_segment = cached_segments[segment_num]
+                if cached_segment.sunk() != segment.sunk():
+                    if segment.sunk():
+                        self._button_array[ship_num][segment_num].setIcon(
+                            self._icons[FieldStatus.SUNK])
+                        cached_segment.sink()
+                    else:
+                        self._button_array[ship_num][segment_num].setIcon(
+                            self._icons[FieldStatus.SHIP])
+                        cached_segment.unsink()
+
+
+    def define_left_click_action(self, function):
+        for row in self._button_array:
+            for button in row:
+                button.set_left_click_action(function)
+
+    def define_right_click_action(self, function):
+        for row in self._button_array:
+            for button in row:
+                button.set_right_click_action(function)
+
+    def place_button_array(self, parent_grid_layout: QGridLayout):
+        for positions, row in zip(self._positions_array, self._button_array):
+            for position, button in zip(positions, row):
+                y, x = position
+                parent_grid_layout.addWidget(button, x, y)

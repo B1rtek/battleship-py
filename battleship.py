@@ -8,7 +8,7 @@ from functools import partial
 from PySide2.QtWidgets import QApplication, QMainWindow
 
 from board import GameBoard, Board, FieldStatus
-from gui import UIBoard, load_icons
+from gui import UIBoard, load_icons, UIFleet
 from fleet_creator import FleetCreator
 from game import Game
 from ui_battleship import Ui_Battleship
@@ -328,8 +328,13 @@ class BattleshipWindow(QMainWindow):
         self._fleet_creator_board = UIBoard()
         self._game_player_board = UIBoard()
         self._game_enemy_board = UIBoard()
+        self._game_player_fleet = UIFleet()
+        self._game_enemy_fleet = UIFleet()
         self._setup_boards()
+        self._setup_fleet_displays()
         self._link_buttons()
+        self._resize_window()
+        self.ui.stackedWidget.setCurrentIndex(0)
 
     def mousePressEvent(self, QMouseEvent):
         if not self._game.players_turn():
@@ -358,6 +363,20 @@ class BattleshipWindow(QMainWindow):
         self._game_enemy_board.place_button_array(
             self.ui.grid_game_enemy_board)
 
+    def _setup_fleet_displays(self):
+        icons = load_icons()
+        self._game_player_fleet.set_icons(icons)
+        self._game_enemy_fleet.set_icons(icons)
+        self._game_player_fleet.define_left_click_action(self._game_left_click)
+        self._game_player_fleet.define_right_click_action(
+            self._game_left_click)
+        self._game_enemy_fleet.define_left_click_action(self._game_left_click)
+        self._game_enemy_fleet.define_right_click_action(self._game_left_click)
+        self._game_player_fleet.place_button_array(
+            self.ui.grid_game_player_fleet)
+        self._game_enemy_fleet.place_button_array(
+            self.ui.grid_game_enemy_fleet)
+
     def _link_buttons(self):
         """
         Assigns functions to different buttons
@@ -371,6 +390,12 @@ class BattleshipWindow(QMainWindow):
         self.ui.button_setup_done.clicked.connect(self._fleet_creator_done)
         self.ui.button_game_main.clicked.connect(self._return_to_main)
         self.ui.button_htp_back.clicked.connect(self._return_to_main)
+
+    def _resize_window(self):
+        if os.name == "nt":
+            self.resize(700, 540)
+        else:
+            self.resize(730, 560)
 
     def _nop(self, x, y):
         pass
@@ -435,11 +460,15 @@ class BattleshipWindow(QMainWindow):
         enemy_board = self._game.get_enemy_board_display()
         self._game_player_board.update_board(player_board, None)
         self._game_enemy_board.update_board(enemy_board, None)
+        player_fleet = self._game.get_player_fleet_display()
+        enemy_fleet = self._game.get_enemy_fleet_display()
+        self._game_player_fleet.update_fleet_display(player_fleet)
+        self._game_enemy_fleet.update_fleet_display(enemy_fleet)
         messages = self._game.get_display_messages()
         for message in messages:
             self.ui.game_plain_text_edit_log.insertPlainText(message)
         scrollbar = self.ui.game_plain_text_edit_log.verticalScrollBar()
-        scrollbar.setValue(scrollbar.maximum()-2)
+        scrollbar.setValue(scrollbar.maximum() - 2)
 
 
 def main(argv):

@@ -272,4 +272,6 @@ class GameBoard:
     def visible_board(self):
         return self._visible_board
 
-
+    def field_undiscovered(self, x, y):
+        return self._visible_board.get_field_status(x,
+                                                    y) == FieldStatus.NOTHING
