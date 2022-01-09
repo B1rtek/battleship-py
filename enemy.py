@@ -1,5 +1,5 @@
 from copy import deepcopy
-from random import choice
+from random import choice, shuffle
 
 
 def create_list_of_adherent(source: tuple[str, int]) -> list:
@@ -63,6 +63,7 @@ class Enemy:
                 self._undiscovered.remove(target)
                 self._to_mark_as_empty.append(target)
         to_shoot_list = create_list_of_adherent(self._last_target)
+        shuffle(to_shoot_list)
         for target in to_shoot_list:
             if target in self._undiscovered:
                 self._to_shoot.append(target)
