@@ -16,19 +16,36 @@ class FleetCreator:
         self._messages = []
 
     def start(self):
+        """
+        Starts the Fleet Creator by creating a new random fleet and placing it
+        on the board
+        """
         self._fleet.create_random()
         self._board.place_fleet(self._fleet)
 
-    def get_board_display(self):
+    def get_board_display(self) -> Board:
+        """
+        :return: Board with the representation of the current Fleet setup
+        """
         return self._board
 
-    def get_setup(self):
+    def get_setup(self) -> tuple[Board, Fleet]:
+        """
+        :return: a tuple of the Board and Fleet created in the Fleet Creator,
+        called when the played uses the "done" command or clicks the "Done"
+        button
+        """
         return self._board, self._fleet
 
-    def get_display_messages(self):
+    def get_display_messages(self) -> str:
+        """
+        A getter for the messages list used by the Battleship classes to get
+        the messages to display
+        :return: a string with all messages generated during the last operation
+        """
         return self._format_messages()
 
-    def _format_messages(self):
+    def _format_messages(self) -> str:
         """
         Creates a string out of the messages on the list, and clears the
         list afterwards
@@ -88,7 +105,6 @@ class FleetCreator:
         result = self._fleet.select_ship(x, y)
         if result:
             self._message_ship_selected()
-        return result
 
     def set_ship_position(self, x: str, y: int):
         """
@@ -130,11 +146,22 @@ class FleetCreator:
     def get_selected_ship(self):
         """
         Returns the selected ship from the fleet
-        :return: The selected ship in the setup fleet
+        :return: The selected ship in the setup fleet (can be None)
         """
         return self._fleet.selected_ship()
 
-    def contains_not_selected_ship(self, x: str, y: int):
+    def contains_not_selected_ship(self, x: str, y: int) -> bool:
+        """
+        Checks if the specified field contains a ship that is not selected.
+        Used in the UI version of the game to determine if the player selected
+        or wanted to move a ship
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        :return: True if this ship does not contain a ship or contains a
+        selected one, False otherwise
+        """
         if self._fleet.selected_ship() is None:
             return True
         if self._fleet.selected_ship().check_if_belongs(x, y):

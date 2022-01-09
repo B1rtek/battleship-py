@@ -80,6 +80,9 @@ class BattleshipCMD:
             self._display_help()
 
     def _display_main_menu(self):
+        """
+        Displays (prints out) the Main Menu
+        """
         menu_content = "Welcome to Battleship!\n" \
                        "1. Play the game\n" \
                        "2. How to play\n" \
@@ -88,12 +91,18 @@ class BattleshipCMD:
         print(menu_content)
 
     def _display_fleet_creator(self):
+        """
+        Displays (prints out) the Fleet Creator
+        """
         display_board = self._fleet_creator.get_board_display()
         print("Set up your fleet:")
         print(display_board)
         print(self._fleet_creator.get_display_messages())
 
     def _display_game(self):
+        """
+        Displays (prints out) the Game
+        """
         enemy_fleet = self._game.get_enemy_fleet_display()
         enemy_fleet_str = enemy_fleet.fleet_to_str(draw_as_enemy=True)
         enemy_board = self._game.get_enemy_board_display()
@@ -112,6 +121,9 @@ class BattleshipCMD:
         print(messages)
 
     def _display_help(self):
+        """
+        Displays (prints out) the Help screen
+        """
         help_content = "How to play:\n" \
                        "The objective of this game is to destroy your " \
                        "opponent's fleet. You and your opponent shoot at " \
@@ -123,8 +135,8 @@ class BattleshipCMD:
 
     def _player_input(self) -> tuple[Command, str, int]:
         """
-        Handles user input and interprets it, creating a command
-        :return: tuple containing a command and arguments
+        Handles user input and interprets it, creating a command tuple
+        :return: tuple containing a command and its arguments
         """
         whole_command = input(self._prompt)
         whole_command = whole_command.lower()
@@ -141,8 +153,9 @@ class BattleshipCMD:
     def _player_input_main_menu(self, command_parts: list[str]) -> \
             tuple[Command, str, int]:
         """
-        Interprets the main menu commands
+        Interprets the Main Menu commands
         :param command_parts: sliced user input
+        :type command_parts: tuple
         :return: formatted command
         """
         if len(command_parts) == 0:
@@ -160,8 +173,9 @@ class BattleshipCMD:
     def _player_input_fleet_creator(self, command_parts: list[str]) -> \
             tuple[Command, str, int]:
         """
-        Interprets the fleet creator commands
+        Interprets the Fleet Creator commands
         :param command_parts: sliced user input
+        :type command_parts: tuple
         :return: formatted command
         """
         if len(command_parts) == 0:
@@ -194,8 +208,9 @@ class BattleshipCMD:
     def _player_input_game(self, command_parts: list[str]) -> \
             tuple[Command, str, int]:
         """
-        Interprets the game commands
+        Interprets the Game commands
         :param command_parts: sliced user input
+        :type command_parts: tuple
         :return: formatted command
         """
         if len(command_parts) == 0:
@@ -242,7 +257,7 @@ class BattleshipCMD:
 
     def _execute_main_menu(self, command):
         """
-        Executes main menu commands
+        Executes Main Menu commands
         :param command: command as a Command class enum
         :type command: Command
         """
@@ -256,7 +271,7 @@ class BattleshipCMD:
 
     def _execute_fleet_creator(self, command, x, y):
         """
-        Executes fleet creator commands
+        Executes Fleet Creator commands
         :param command: command as a Command class enum
         :type command: Command
         :param x: x coordinate of a field (used in some commands)
@@ -283,7 +298,7 @@ class BattleshipCMD:
 
     def _execute_game(self, command, x, y):
         """
-        Executes game commands
+        Executes Game commands
         :param command: command as a Command class enum
         :type command: Command
         :param x: x coordinate of a field (used in some commands)
@@ -309,6 +324,10 @@ class BattleshipCMD:
                     self._state = AppState.MAIN_MENU
 
     def start(self):
+        """
+        Begins the "fetch-execute" loop, which displays the current contents,
+        fetches the command from the user, interprets it and executes it
+        """
         while not self._quit:
             self._display()
             command, x, y = self._player_input()
@@ -321,6 +340,11 @@ class BattleshipWindow(QMainWindow):
     """
 
     def __init__(self, parent=None):
+        """
+        Initializes all elements of the game and all additional widgets created
+        in code rather than in the designer like UIBoards and UIFleets
+        :param parent: parent widget, in this case always None
+        """
         super().__init__(parent)
         self.ui = Ui_Battleship()
         self.ui.setupUi(self)
@@ -339,6 +363,14 @@ class BattleshipWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(0)
 
     def mousePressEvent(self, QMouseEvent):
+        """
+        Registers left mouse clicks on the window outside of buttons, used to
+        advance the game to the next enemy move without the need for a player
+        to click a dedicated button, it makes it easier to interact with the
+        game
+        :param QMouseEvent: QMouseEvent generated with the mouse click
+        :type QMouseEvent: QMouseEvent
+        """
         if not self._game.players_turn():
             self._game.enemy_move()
             self._game_refresh()
@@ -346,6 +378,11 @@ class BattleshipWindow(QMainWindow):
             self.ui.stackedWidget.setCurrentIndex(0)
 
     def _setup_boards(self):
+        """
+        Creates the Game and Fleet Creator boards in the UI, initializes them,
+        assigns actions to their buttons and places them in their target Grid
+        Layouts
+        """
         icons = load_icons()
         self._fleet_creator_board.set_icons(icons)
         self._game_player_board.set_icons(icons)
@@ -366,6 +403,11 @@ class BattleshipWindow(QMainWindow):
             self.ui.grid_game_enemy_board)
 
     def _setup_fleet_displays(self):
+        """
+        Creates the UIFleets in the UI, initializes them, assigns actions to
+        their buttons (triggering the enemy moves if it's enemy move, just like
+        the mousePressEvent does) and places them in their target Grid Layouts
+        """
         icons = load_icons()
         self._game_player_fleet.set_icons(icons)
         self._game_enemy_fleet.set_icons(icons)
@@ -381,7 +423,7 @@ class BattleshipWindow(QMainWindow):
 
     def _link_buttons(self):
         """
-        Assigns functions to different buttons
+        Assigns functions to all UI buttons' clicked signals
         """
         self.ui.button_main_play.clicked.connect(self._fleet_creator_start)
         self.ui.button_main_htp.clicked.connect(self._htp_show)
@@ -408,26 +450,61 @@ class BattleshipWindow(QMainWindow):
         self.ui.label_htp_help.setAlignment(Qt.AlignJustify)
 
     def _resize_window(self):
+        """
+        Resizes the window to the smallest size in which the game screen looks
+        good. The window can be resized afterwards, but the buttons which
+        represent the boards might be a bit squished
+        """
         if os.name == "nt":
             self.resize(700, 540)
         else:
             self.resize(730, 560)
 
     def _nop(self, x, y):
+        """
+        Literally does nothing, assigned as a button action if the button is
+        supposed to do nothing when pressed
+        :param x: a placeholder ensuring compatibility with all other functions
+        assigned to clicks
+        :param y: a placeholder ensuring compatibility with all other functions
+        assigned to clicks
+        """
         pass
 
     def _fleet_creator_start(self):
+        """
+        Starts the Fleet Creator, starting the setup stage of the game
+        :return:
+        """
         self._fleet_creator.start()
         self._fleet_creator_refresh()
         self.ui.stackedWidget.setCurrentIndex(1)
 
     def _htp_show(self):
+        """
+        Shows the How To Play page
+        :return:
+        """
         self.ui.stackedWidget.setCurrentIndex(3)
 
     def _return_to_main(self):
+        """
+        Returns to the Main Menu
+        :return:
+        """
         self.ui.stackedWidget.setCurrentIndex(0)
 
     def _fleet_creator_left_click(self, x: str, y: int):
+        """
+        Performs the left click operations in the Fleet Creator, and refreshes
+        the Fleet Creator board afterwards
+        :param x: x argument of a command called by a button that this function
+        was assigned to, in this case the letter of the row on the board
+        :type x: str
+        :param y: y argument of a command called by a button that this function
+        was assigned to, in this case the number of the column on the board
+        :type y: int
+        """
         if self._fleet_creator.contains_not_selected_ship(x, y):
             self._fleet_creator.select_ship(x, y)
         else:
@@ -435,14 +512,27 @@ class BattleshipWindow(QMainWindow):
         self._fleet_creator_refresh()
 
     def _fleet_creator_rand(self):
+        """
+        Calls the function in the Fleet Creator which creates a new random
+        fleet, and refreshes the Fleet Creator board afterwards
+        """
         self._fleet_creator.random_fleet()
         self._fleet_creator_refresh()
 
     def _fleet_creator_rot(self):
+        """
+        Calls the function in the Fleet Creator which rotates the selected
+        ship, and refreshes the Fleet Creator board afterwards
+        """
         self._fleet_creator.change_ship_rotation()
         self._fleet_creator_refresh()
 
     def _fleet_creator_done(self):
+        """
+        Ends the setup stage of the game ans starts the Game itself, passing
+        the created fleet from the Fleet Creator to the Game as the player's
+        fleet
+        """
         board, fleet = self._fleet_creator.get_setup()
         self._game.start_game(board, fleet)
         self._game_refresh()
@@ -450,11 +540,24 @@ class BattleshipWindow(QMainWindow):
         self.ui.stackedWidget.setCurrentIndex(2)
 
     def _fleet_creator_refresh(self):
+        """
+        Refreshes the Fleet Creator UIBoard after performing an action
+        """
         board = self._fleet_creator.get_board_display()
         ship = self._fleet_creator.get_selected_ship()
         self._fleet_creator_board.update_board(board, ship)
 
     def _game_left_click(self, x: str, y: int):
+        """
+        Performs the left click operations in the Game, and refreshes all Game
+        UI elements afterwards
+        :param x: x argument of a command called by a button that this function
+        was assigned to, in this case the letter of the row on the board
+        :type x: str
+        :param y: y argument of a command called by a button that this function
+        was assigned to, in this case the number of the column on the board
+        :type y: int
+        """
         if self._game.won():
             self.ui.stackedWidget.setCurrentIndex(0)
         if self._game.players_turn():
@@ -464,6 +567,16 @@ class BattleshipWindow(QMainWindow):
         self._game_refresh()
 
     def _game_right_click(self, x: str, y: int):
+        """
+        Performs the right click operations in the Game, and refreshes all Game
+        UI elements afterwards
+        :param x: x argument of a command called by a button that this function
+        was assigned to, in this case the letter of the row on the board
+        :type x: str
+        :param y: y argument of a command called by a button that this function
+        was assigned to, in this case the number of the column on the board
+        :type y: int
+        """
         status = self._game.get_enemy_board_display().get_field_status(x, y)
         if status != FieldStatus.MISS:
             self._game.mark_field(x, y)
@@ -472,6 +585,10 @@ class BattleshipWindow(QMainWindow):
         self._game_refresh()
 
     def _game_refresh(self):
+        """
+        Refreshes all Game UI elements after player or the enemy performs a
+        move
+        """
         player_board = self._game.get_player_board_display()
         enemy_board = self._game.get_enemy_board_display()
         self._game_player_board.update_board(player_board, None)
@@ -488,6 +605,12 @@ class BattleshipWindow(QMainWindow):
 
 
 def main(argv):
+    """
+    The main function, parses the command line arguments and starts the correct
+    version of the game according to those arguments
+    :param argv: command line arguments
+    :type argv: list
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--no-ui", required=False,
                         action="store_true",

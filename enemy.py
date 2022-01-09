@@ -3,12 +3,28 @@ from random import choice, shuffle
 
 
 def create_list_of_adherent(source: tuple[str, int]) -> list:
+    """
+    Creates a list of tuples representing coordinates of fields that would be
+    adherent to a field with coordinates provided in the source tuple
+    :param source: tuple containing coordinates of a field
+    :type source: tuple
+    :return: list of tuples containing coordinates of fields the would be
+    adherent to the given one
+    """
     x, y = source
     return [(chr(ord(x) - 1), y), (x, y - 1), (chr(ord(x) + 1), y),
             (x, y + 1)]
 
 
 def create_list_of_tangents(source: tuple[str, int]) -> list:
+    """
+    Creates a list of tuples representing coordinates of fields that would
+    touch the field with provided coordinates with only their corner
+    :param source: tuple containing coordinates of a field
+    :type source: tuple
+    :return: list of tuples containing coordinates of fields that touch the
+    source field's corners
+    """
     x, y = source
     return [(chr(ord(x) - 1), y - 1), (chr(ord(x) + 1), y - 1),
             (chr(ord(x) - 1), y + 1), (chr(ord(x) + 1), y + 1)]
@@ -54,8 +70,8 @@ class Enemy:
 
     def react_to_hit(self):
         """
-        Marks fields that can't have any ships as empty and puts new targets
-        on the to_shoot list
+        Appends coordinates of fields that can't have any ships to the
+        _to_mark_as_empty list and puts new targets on the _to_shoot list
         """
         to_mark_as_empty_list = create_list_of_tangents(self._last_target)
         for target in to_mark_as_empty_list:
@@ -69,6 +85,10 @@ class Enemy:
                 self._to_shoot.append(target)
 
     def react_to_sink(self):
+        """
+        Appends all the remaining unmarked fields around a sunken ship to the
+        _to_mark_as_empty list
+        """
         to_mark_as_empty_list = create_list_of_adherent(self._last_target)
         for target in to_mark_as_empty_list:
             if target in self._undiscovered:

@@ -22,19 +22,31 @@ class ShipSegment:
         self._y = y
         self._sunk = False
 
-    def x(self):
+    def x(self) -> str:
         return self._x
 
-    def y(self):
+    def y(self) -> int:
         return self._y
 
-    def position(self):
+    def position(self) -> tuple[str, int]:
+        """
+        Returns a tuple representing this segment's position
+        """
         return self._x, self._y
 
     def sink(self):
+        """
+        Sinks this segment by setting it's _sunk value to True
+        """
         self._sunk = True
 
     def unsink(self):
+        """
+        Unsinks this segment by setting it's _sunk value to False, used to
+        initialize the Fleet displays in the UI version, since they only
+        refresh when there is a change in the state of the fleet, so to begin
+        the game all ships must be sunk for the displays to update
+        """
         self._sunk = False
 
     def sunk(self):
@@ -72,13 +84,13 @@ class Ship:
         for x, y in field_coordinates:
             self._segments.append(ShipSegment(x, y))
 
-    def ship_to_str(self, draw_as_enemy: bool = False):
+    def ship_to_str(self, draw_as_enemy: bool = False) -> str:
         """
         Prints out a representation of the ship's condition in a graphical form
         For example, "████" represents a ship of size 4 without any damage,
         "█▒▒" represents a ship of size 3 with two of its segments destroyed.
         :param draw_as_enemy: if set to True, the ship will be drawn as a sunk
-        one or undamaged one, to not indicate which ship has been struck to the
+        one or undamaged one, to not indicate which part has been struck to the
         enemy, False by default
         :type draw_as_enemy: bool
         """
@@ -131,19 +143,23 @@ class Ship:
                 segment.sink()
                 return
 
-    def segments(self):
+    def segments(self) -> List[ShipSegment]:
         return self._segments
 
-    def size(self):
+    def size(self) -> int:
         return self._size
 
-    def vertical(self):
+    def vertical(self) -> bool:
         return self._vertical
 
-    def origin(self):
+    def origin(self) -> tuple[str, int]:
         return self._origin
 
-    def get_segment_coordinates(self):
+    def get_segment_coordinates(self) -> List[tuple]:
+        """
+        Returns coordinates of segments that make this ship
+        :return: a list tuples with segment coordinates
+        """
         segments = []
         for segment in self._segments:
             segments.append(segment.position())
@@ -166,7 +182,7 @@ def field_on_board(field: tuple[str, int]) -> bool:
     return False
 
 
-def field_available(temp_ship, temp_board):
+def field_available(temp_ship, temp_board) -> bool:
     """
     Checks if a ship with given position, size and rotation can be placed on
     the board, checking if all segments of the ship have valid board
@@ -226,13 +242,15 @@ class Fleet:
         and that's how they are generated in create_random() and create_fleet()
         methods. self._selected_ship is the ship that will be moved or rotated
         while modifying the board
+        :param ships: A list of ships to initialize this fleet with
+        :type ships: list
         """
         self._ships = []
         if ships is not None:
             self._ships = ships
         self._selected_ship = None
 
-    def fleet_to_str(self, draw_as_enemy: bool = False):
+    def fleet_to_str(self, draw_as_enemy: bool = False) -> str:
         """
         Returns a string containing all ships in the fleet and their current
         states. For example:
@@ -241,6 +259,10 @@ class Fleet:
         ██ ██ ██ ▒ █ █
         represents a fleet with it's 4 segment ship with its middle segments
         damaged, and the first and fourth small ships destroyed.
+        :param draw_as_enemy: if set to True, the ships will be drawn as a sunk
+        or undamaged, to not indicate which ship has been struck to the
+        enemy, False by default
+        :type draw_as_enemy: bool
         :return: a string representing a fleet, similar to the example shown
         above
         """
@@ -284,7 +306,7 @@ class Fleet:
             mark_misses_around(ship_to_add, temp_board)
             temp_board.place_ship(ship_to_add)
 
-    def hit(self, x: str, y: int):
+    def hit(self, x: str, y: int) -> bool:
         """
         Damages a ship in the specified coordinates
         :param x: x coordinate of the field
@@ -328,7 +350,7 @@ class Fleet:
             return True
         return False
 
-    def set_ship_position(self, x: str, y: int) -> str:
+    def set_ship_position(self, x: str, y: int) -> bool:
         """
         Sets selected ship's position to the specified coordinates. Coordinates
         point to the ship's new origin. Before moving the ship, a test is
@@ -338,40 +360,41 @@ class Fleet:
         :type x: str
         :param y: y coordinate of the new position
         :type y: int
-        :return: A message stating either success or failure of the move
+        :return: True if moving the ship to a new position was successful,
+        False otherwise
         """
         if self._selected_ship is None:
-            return "No ship has been selected"
+            return False
         vertical = self._selected_ship.vertical()
         size = self._selected_ship.size()
         new_ship = Ship((x, y), size, vertical)
         old_ship_index = self._new_ship_test_fit(new_ship)
         if old_ship_index == -1:
-            return "The new placement is invalid"
+            return False
         self._ships[old_ship_index] = new_ship
         self._selected_ship = new_ship
-        return "Ship has been moved to a new location"
+        return True
 
-    def change_ship_rotation(self):
+    def change_ship_rotation(self) -> bool:
         """
         Changes selected ship's rotation from vertical to horizontal, or the
         other way, rotating it around its origin. Just like in
         set_ship_position, a test fit is conducted to see if the rotated ship
         doesn't collide with any other ships.
-        :return: A message stating either success or failure of the rotation
+        :return: True if rotation was successful, False otherwise
         """
         if self._selected_ship is None:
-            return "No ship has been selected"
+            return False
         vertical = not self._selected_ship.vertical()
         size = self._selected_ship.size()
         x, y = self._selected_ship.origin()
         new_ship = Ship((x, y), size, vertical)
         old_ship_index = self._new_ship_test_fit(new_ship)
         if old_ship_index == -1:
-            return "The new rotation is invalid"
+            return False
         self._ships[old_ship_index] = new_ship
         self._selected_ship = new_ship
-        return "Ship has been rotated"
+        return True
 
     def _new_ship_test_fit(self, new_ship: Ship) -> int:
         """
@@ -419,7 +442,7 @@ class Fleet:
         :param display_as_enemy: if set to True, the data will reflect what the
         enemy would see, otherwise it'll look like what the player should see
         :type display_as_enemy: bool
-        return: a Fleet containing data necessary to draw this board on the
+        :return: a Fleet containing data necessary to draw this board on the
         screen
         """
         if display_as_enemy:

@@ -72,13 +72,15 @@ class Game:
         """
         return self._enemy_fleet.get_display_fleet(display_as_enemy=True)
 
-    def get_display_messages(self):
+    def get_display_messages(self) -> str:
         """
-        Returns the messages that the player received in this turn
+        A getter for the messages list used by the Battleship classes to get
+        the messages to display
+        :return: a string with all messages generated during the last move
         """
         return self._format_messages()
 
-    def _format_messages(self):
+    def _format_messages(self) -> str:
         """
         Creates a string out of the messages on the list, and clears the
         list afterwards
@@ -194,7 +196,10 @@ class Game:
         :type x: str
         :param y: y coordinate of a field
         :type y: int
-        :return: True if the player hit enemy's ship, otherwise false.
+        :return: True if the player hit enemy's ship, otherwise false. True is
+        also returned when the move failed because of discovering fields on
+        coordinates outside of the board or fields already discovered, to
+        prevent the player from losing their turn
         """
         if not self._players_turn:
             self._message_not_players_turn()

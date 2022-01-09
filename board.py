@@ -136,10 +136,27 @@ class Board:
             self.set_field_status(x, y, FieldStatus.SUNK)
 
     def get_field_status(self, x: str, y: int) -> FieldStatus:
+        """
+        Returns the status of a field on the specified coordinates
+        :param x: x coordinate of a field
+        :type x: str
+        :param y: y coordinate of a field
+        :type y: int
+        :return: status of the specified field
+        """
         c_x, c_y = translate_coordinates(x, y)
         return self._fields[c_y][c_x].status()
 
     def set_field_status(self, x: str, y: int, status: FieldStatus):
+        """
+        Sets the status of a field on the specified coordinates
+        :param x: x coordinate of a field
+        :type x: str
+        :param y: y coordinate of a field
+        :type y: int
+        :param status: new status of a field
+        :type status: FieldStatus
+        """
         c_x, c_y = translate_coordinates(x, y)
         self._fields[c_y][c_x].set_status(status)
 
@@ -266,12 +283,20 @@ class GameBoard:
                     display_board.set_field_status(x, y, status)
             return display_board
 
-    def data_board(self):
+    def data_board(self) -> Board:
         return self._data_board
 
-    def visible_board(self):
+    def visible_board(self) -> Board:
         return self._visible_board
 
-    def field_undiscovered(self, x, y):
+    def field_undiscovered(self, x, y) -> bool:
+        """
+        Checks if a field on the specified coordinates is undiscovered
+        :param x: x coordinate of the field
+        :type x: str
+        :param y: y coordinate of the field
+        :type y: int
+        :return: True if the specidied field is undiscovered, False otherwise
+        """
         return self._visible_board.get_field_status(x,
                                                     y) == FieldStatus.NOTHING
