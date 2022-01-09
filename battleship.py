@@ -5,6 +5,7 @@ import time
 from enum import Enum
 from functools import partial
 
+from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QMainWindow
 
 from board import GameBoard, Board, FieldStatus
@@ -334,6 +335,7 @@ class BattleshipWindow(QMainWindow):
         self._setup_fleet_displays()
         self._link_buttons()
         self._resize_window()
+        self._fix_pyside2_uic_bug()
         self.ui.stackedWidget.setCurrentIndex(0)
 
     def mousePressEvent(self, QMouseEvent):
@@ -390,6 +392,20 @@ class BattleshipWindow(QMainWindow):
         self.ui.button_setup_done.clicked.connect(self._fleet_creator_done)
         self.ui.button_game_main.clicked.connect(self._return_to_main)
         self.ui.button_htp_back.clicked.connect(self._return_to_main)
+
+    def _fix_pyside2_uic_bug(self):
+        """
+        For some reason, if one justifies the text in a widget, pyside2-uic
+        generates code that doesn't work on Linux:
+        self.ui.label_htp_help.setAlignment(Qt.AlignJustify|Qt.AlignTop)
+        On Windows it just ignores the second argument, but on Linux it spits
+        out an error:
+        TypeError: 'PySide2.QtCore.Qt.AlignmentFlag' object cannot be
+        interpreted as an integer
+        The solution to this is to justify the text manually from the code, and
+        not touch alignment settings at all in degigner.
+        """
+        self.ui.label_htp_help.setAlignment(Qt.AlignJustify)
 
     def _resize_window(self):
         if os.name == "nt":

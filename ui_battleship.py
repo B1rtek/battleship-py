@@ -462,15 +462,13 @@ class Ui_Battleship(object):
 
         self.verticalLayout_4.addWidget(self.label_htp_title, 0, Qt.AlignHCenter)
 
-        self.label_htp_tutorial = QLabel(self.page_htp)
-        self.label_htp_tutorial.setObjectName(u"label_htp_tutorial")
-        sizePolicy1.setHeightForWidth(self.label_htp_tutorial.sizePolicy().hasHeightForWidth())
-        self.label_htp_tutorial.setSizePolicy(sizePolicy1)
-        self.label_htp_tutorial.setAlignment(Qt.AlignJustify|Qt.AlignTop)
-        self.label_htp_tutorial.setWordWrap(True)
-        self.label_htp_tutorial.setMargin(5)
+        self.label_htp_help = QLabel(self.page_htp)
+        self.label_htp_help.setObjectName(u"label_htp_help")
+        sizePolicy5.setHeightForWidth(self.label_htp_help.sizePolicy().hasHeightForWidth())
+        self.label_htp_help.setSizePolicy(sizePolicy5)
+        self.label_htp_help.setWordWrap(True)
 
-        self.verticalLayout_4.addWidget(self.label_htp_tutorial)
+        self.verticalLayout_4.addWidget(self.label_htp_help)
 
         self.button_htp_back = QPushButton(self.page_htp)
         self.button_htp_back.setObjectName(u"button_htp_back")
@@ -506,7 +504,7 @@ class Ui_Battleship(object):
 
         self.retranslateUi(Battleship)
 
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(Battleship)
@@ -527,7 +525,7 @@ class Ui_Battleship(object):
         self.label_player_board.setText(QCoreApplication.translate("Battleship", u"Your board", None))
         self.label_enemy_board.setText(QCoreApplication.translate("Battleship", u"Enemy's board", None))
         self.label_htp_title.setText(QCoreApplication.translate("Battleship", u"How to play", None))
-        self.label_htp_tutorial.setText(QCoreApplication.translate("Battleship", u"The goal of the game is to destroy your enemy's fleet.\n"
+        self.label_htp_help.setText(QCoreApplication.translate("Battleship", u"The goal of the game is to destroy your enemy's fleet.\n"
 "But first, in order to fight them, you need your own fleet - which you prepare on the setup page.\n"
 "In there, you can see your fleet, and three buttons which you can use to move the ships around. First, you select a ship by clicking on it. To move it to a new location, click any other empty field, and if there is enough space for that ship there, it will be moved. The field on which you click will contain the left upmost segment of the ship you moved. To rotate the selected ship, press the \"Rotate\" button. To generate a new random fleet, press the \"Generate random\" button. When you're done setting up your fleet, press \"Done\" to start the game.\n"
 "The game screen consists of two boards and two sets of fleet displays, and a message log, where you can see what has been happening in the last few moves. To shoot at a certain field, click on it with the left mouse button, to mark or unmark that field, click on it with the right mouse button. The ene"
