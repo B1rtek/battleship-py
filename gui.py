@@ -1,11 +1,9 @@
-from enum import Enum
-
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPixmap, QIcon
-from PySide2.QtWidgets import QMainWindow, QToolButton, QSizePolicy, \
+from PySide2.QtWidgets import QToolButton, QSizePolicy, \
     QGridLayout
 
-from board import GameBoard, FieldStatus, translate_coordinates, Board
+from board import FieldStatus, translate_coordinates, Board
 from fleet import Fleet, Ship
 
 
@@ -35,11 +33,12 @@ def translate_coords(x: int, y: int) -> tuple[str, int]:
 
 # Original code by Oleh Prypin distributed under terms of the CC BY-SA 4.0
 # license
-# Source: https://stackoverflow.com/questions/11008140/pyqt-custom-widget-fixed-as-square
+# Source: https://stackoverflow.com/questions/11008140/pyqt-custom
+# -widget-fixed-as-square
 class BoardButton(QToolButton):
     """
     Represents a single button on the board and a segment displaying a ship
-    in the Fleet displayes under boards on the Game screen
+    in the Fleet displays under boards on the Game screen
     """
 
     def __init__(self, parent=None):
@@ -74,23 +73,9 @@ class BoardButton(QToolButton):
         elif QMouseEvent.button() == Qt.RightButton:
             self._right_click_action(self._x, self._y)
 
-    def _perform_left_click_action(self):
-        """
-        Performs the action triggered by a left mouse button click on this
-        button
-        """
-        self._left_click_action(self._x, self._y)
-
-    def _perform_right_click_action(self):
-        """
-        Performs the action triggered by a right mouse button click on this
-        button
-        """
-        self._right_click_action(self._x, self._y)
-
     def set_left_click_action(self, function):
         """
-        Sets the _left_click_action to funcion
+        Sets the _left_click_action to function
         :param function: a function or a method to be set to be executed by
         this button when it's clicked on with the left mouse button
         """
@@ -98,7 +83,7 @@ class BoardButton(QToolButton):
 
     def set_right_click_action(self, function):
         """
-        Sets the _right_click_action to funcion
+        Sets the _right_click_action to function
         :param function: a function or a method to be set to be executed by
         this button when it's clicked on with the right mouse button
         """
@@ -114,12 +99,6 @@ class BoardButton(QToolButton):
         """
         self._x = x
         self._y = y
-
-    def get_game_coordinates(self) -> tuple[str, int]:
-        """
-        :return: a tuple with this button's in game coordinates
-        """
-        return self._x, self._y
 
 
 class UIBoard:

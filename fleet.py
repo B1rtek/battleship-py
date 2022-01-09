@@ -22,12 +22,6 @@ class ShipSegment:
         self._y = y
         self._sunk = False
 
-    def x(self) -> str:
-        return self._x
-
-    def y(self) -> int:
-        return self._y
-
     def position(self) -> tuple[str, int]:
         """
         Returns a tuple representing this segment's position
@@ -460,37 +454,5 @@ class Fleet:
         else:
             return Fleet(self._ships)
 
-    def biggest_ship(self):
-        return self._ships[0]
-
-    def big_ship1(self):
-        return self._ships[1]
-
-    def big_ship2(self):
-        return self._ships[2]
-
-    def medium_ship1(self):
-        return self._ships[3]
-
-    def medium_ship2(self):
-        return self._ships[4]
-
-    def medium_ship3(self):
-        return self._ships[5]
-
-    def small_ship1(self):
-        return self._ships[6]
-
-    def small_ship2(self):
-        return self._ships[7]
-
-    def small_ship3(self):
-        return self._ships[8]
-
-    def small_ship4(self):
-        return self._ships[9]
-
     def selected_ship(self):
         return self._selected_ship
-
-

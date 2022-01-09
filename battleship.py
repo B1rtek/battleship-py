@@ -1,17 +1,16 @@
 import argparse
 import os
 import sys
-import time
 from enum import Enum
 from functools import partial
 
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QMainWindow
 
-from board import GameBoard, Board, FieldStatus
-from gui import UIBoard, load_icons, UIFleet
+from board import FieldStatus
 from fleet_creator import FleetCreator
 from game import Game
+from gui import UIBoard, load_icons, UIFleet
 from ui_battleship import Ui_Battleship
 
 
@@ -445,7 +444,7 @@ class BattleshipWindow(QMainWindow):
         TypeError: 'PySide2.QtCore.Qt.AlignmentFlag' object cannot be
         interpreted as an integer
         The solution to this is to justify the text manually from the code, and
-        not touch alignment settings at all in degigner.
+        not touch alignment settings at all in designer.
         """
         self.ui.label_htp_help.setAlignment(Qt.AlignJustify)
 
@@ -474,7 +473,6 @@ class BattleshipWindow(QMainWindow):
     def _fleet_creator_start(self):
         """
         Starts the Fleet Creator, starting the setup stage of the game
-        :return:
         """
         self._fleet_creator.start()
         self._fleet_creator_refresh()
@@ -483,14 +481,12 @@ class BattleshipWindow(QMainWindow):
     def _htp_show(self):
         """
         Shows the How To Play page
-        :return:
         """
         self.ui.stackedWidget.setCurrentIndex(3)
 
     def _return_to_main(self):
         """
         Returns to the Main Menu
-        :return:
         """
         self.ui.stackedWidget.setCurrentIndex(0)
 

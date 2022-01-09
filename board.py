@@ -243,25 +243,6 @@ class GameBoard:
         self._data_board.mark_sunken_ship(ship_to_sink)
         self._visible_board.mark_sunken_ship(ship_to_sink)
 
-    def print_board(self, draw_as_enemy: bool = False):
-        """
-        Prints the board in the given mode
-        :param draw_as_enemy: if set to true, draws the version of the board
-        visible to the enemy, otherwise it prints out the data board
-        :type draw_as_enemy: bool
-        """
-        if draw_as_enemy:
-            print(self._visible_board)
-        else:
-            combined_board = Board()
-            for x in "abcdefghij":
-                for y in range(1, 11):
-                    status = self._data_board.get_field_status(x, y)
-                    if status == FieldStatus.NOTHING:
-                        status = self._visible_board.get_field_status(x, y)
-                    combined_board.set_field_status(x, y, status)
-            print(combined_board)
-
     def get_display_board(self, display_as_enemy: bool = False) -> Board:
         """
         Creates a data board representing what the specified player would see
@@ -282,12 +263,6 @@ class GameBoard:
                         status = self._visible_board.get_field_status(x, y)
                     display_board.set_field_status(x, y, status)
             return display_board
-
-    def data_board(self) -> Board:
-        return self._data_board
-
-    def visible_board(self) -> Board:
-        return self._visible_board
 
     def field_undiscovered(self, x, y) -> bool:
         """

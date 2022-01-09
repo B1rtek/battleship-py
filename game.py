@@ -1,6 +1,4 @@
-import time
-
-from board import GameBoard, Board, FieldStatus
+from board import GameBoard, Board
 from enemy import Enemy
 from fleet import Fleet, field_on_board
 
