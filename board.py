@@ -271,7 +271,7 @@ class GameBoard:
         :type x: str
         :param y: y coordinate of the field
         :type y: int
-        :return: True if the specidied field is undiscovered, False otherwise
+        :return: True if the specified field is undiscovered, False otherwise
         """
         return self._visible_board.get_field_status(x,
                                                     y) == FieldStatus.NOTHING

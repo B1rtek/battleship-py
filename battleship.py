@@ -370,11 +370,12 @@ class BattleshipWindow(QMainWindow):
         :param QMouseEvent: QMouseEvent generated with the mouse click
         :type QMouseEvent: QMouseEvent
         """
-        if not self._game.players_turn():
-            self._game.enemy_move()
-            self._game_refresh()
-        if self._game.won():
-            self.ui.stackedWidget.setCurrentIndex(0)
+        if self.ui.stackedWidget.currentIndex() == 2:  # in Game
+            if not self._game.players_turn():
+                self._game.enemy_move()
+                self._game_refresh()
+            if self._game.won():
+                self.ui.stackedWidget.setCurrentIndex(0)
 
     def _setup_boards(self):
         """
@@ -531,8 +532,8 @@ class BattleshipWindow(QMainWindow):
         """
         board, fleet = self._fleet_creator.get_setup()
         self._game.start_game(board, fleet)
-        self._game_refresh()
         self.ui.game_plain_text_edit_log.clear()
+        self._game_refresh()
         self.ui.stackedWidget.setCurrentIndex(2)
 
     def _fleet_creator_refresh(self):
@@ -594,8 +595,7 @@ class BattleshipWindow(QMainWindow):
         self._game_player_fleet.update_fleet_display(player_fleet)
         self._game_enemy_fleet.update_fleet_display(enemy_fleet)
         messages = self._game.get_display_messages()
-        for message in messages:
-            self.ui.game_plain_text_edit_log.insertPlainText(message)
+        self.ui.game_plain_text_edit_log.insertPlainText(messages)
         scrollbar = self.ui.game_plain_text_edit_log.verticalScrollBar()
         scrollbar.setValue(scrollbar.maximum() - 2)
 

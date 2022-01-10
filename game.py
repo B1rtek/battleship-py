@@ -35,6 +35,7 @@ class Game:
         self._create_enemy_fleet()
         self._players_turn = True
         self._won = False
+        self._message_players_turn()
 
     def _create_enemy_fleet(self):
         """
@@ -182,10 +183,16 @@ class Game:
 
     def _message_field_already_discovered(self):
         """
-        Adds the message about player trying to disover an already discovered
+        Adds the message about player trying to discover an already discovered
         field to the messages list
         """
         self._messages.append("This field has been already discovered")
+
+    def _message_players_turn(self):
+        """
+        Adds the message about player's turn to the messages list
+        """
+        self._messages.append("It's your turn.")
 
     def discover_field(self, x: str, y: int) -> bool:
         """

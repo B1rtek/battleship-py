@@ -36,7 +36,7 @@ class ShipSegment:
 
     def unsink(self):
         """
-        Unsinks this segment by setting it's _sunk value to False, used to
+        "Unsinks" this segment by setting it's _sunk value to False, used to
         initialize the Fleet displays in the UI version, since they only
         refresh when there is a change in the state of the fleet, so to begin
         the game all ships must be sunk for the displays to update
