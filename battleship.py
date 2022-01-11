@@ -11,7 +11,7 @@ from board import FieldStatus
 from fleet_creator import FleetCreator
 from game import Game
 from gui import UIBoard, load_icons, UIFleet
-from settings import Settings
+from settings import Settings, Setting
 from ui_battleship import Ui_Battleship
 
 
@@ -362,7 +362,9 @@ class BattleshipCMD:
 
     def _execute_settings(self, command: Command):
         if command == Command.SETTINGS_MMA:
-            self._settings.toggle_mark_misses_around()
+            setting_mma = self._settings.get_settings()[
+                Setting.MARK_MISSES_AROUND]
+            self._settings.set_mark_misses_around(not setting_mma)
         else:
             self._game.apply_settings(self._settings.get_settings())
             self._state = AppState.MAIN_MENU
@@ -399,9 +401,11 @@ class BattleshipWindow(QMainWindow):
         self._game_enemy_board = UIBoard()
         self._game_player_fleet = UIFleet()
         self._game_enemy_fleet = UIFleet()
+        self._settings = Settings()
         self._setup_boards()
         self._setup_fleet_displays()
         self._link_buttons()
+        self._load_settings()
         self._resize_window()
         self._fix_pyside2_uic_bug()
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -472,6 +476,7 @@ class BattleshipWindow(QMainWindow):
         """
         self.ui.button_main_play.clicked.connect(self._fleet_creator_start)
         self.ui.button_main_htp.clicked.connect(self._htp_show)
+        self.ui.button_main_settings.clicked.connect(self._settings_show)
         self.ui.button_main_quit.clicked.connect(partial(sys.exit, 0))
         self.ui.button_setup_exit.clicked.connect(self._return_to_main)
         self.ui.button_setup_rand.clicked.connect(self._fleet_creator_rand)
@@ -479,6 +484,14 @@ class BattleshipWindow(QMainWindow):
         self.ui.button_setup_done.clicked.connect(self._fleet_creator_done)
         self.ui.button_game_main.clicked.connect(self._return_to_main)
         self.ui.button_htp_back.clicked.connect(self._return_to_main)
+        self.ui.button_settings_back.clicked.connect(self._settings_save_and_back)
+        self.ui.checkbox_settings_mma.stateChanged.connect(
+            self._settings_toggle_mma)
+
+    def _load_settings(self):
+        settings = self._settings.get_settings()
+        self.ui.checkbox_settings_mma.setChecked(
+            settings[Setting.MARK_MISSES_AROUND])
 
     def _fix_pyside2_uic_bug(self):
         """
@@ -643,6 +656,17 @@ class BattleshipWindow(QMainWindow):
         self.ui.game_plain_text_edit_log.insertPlainText(messages)
         scrollbar = self.ui.game_plain_text_edit_log.verticalScrollBar()
         scrollbar.setValue(scrollbar.maximum() - 2)
+
+    def _settings_show(self):
+        self.ui.stackedWidget.setCurrentIndex(4)
+
+    def _settings_toggle_mma(self):
+        new_state = self.ui.checkbox_settings_mma.isChecked()
+        self._settings.set_mark_misses_around(new_state)
+
+    def _settings_save_and_back(self):
+        self._game.apply_settings(self._settings.get_settings())
+        self._return_to_main()
 
 
 def main(argv):

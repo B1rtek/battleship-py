@@ -17,7 +17,7 @@ class Ui_Battleship(object):
     def setupUi(self, Battleship):
         if not Battleship.objectName():
             Battleship.setObjectName(u"Battleship")
-        Battleship.resize(630, 500)
+        Battleship.resize(770, 500)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -79,6 +79,16 @@ class Ui_Battleship(object):
 
         self.verticalLayout_2.addWidget(self.button_main_play, 0, Qt.AlignHCenter)
 
+        self.button_main_settings = QPushButton(self.page_main_menu)
+        self.button_main_settings.setObjectName(u"button_main_settings")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.button_main_settings.sizePolicy().hasHeightForWidth())
+        self.button_main_settings.setSizePolicy(sizePolicy4)
+
+        self.verticalLayout_2.addWidget(self.button_main_settings, 0, Qt.AlignHCenter)
+
         self.button_main_htp = QPushButton(self.page_main_menu)
         self.button_main_htp.setObjectName(u"button_main_htp")
         sizePolicy3.setHeightForWidth(self.button_main_htp.sizePolicy().hasHeightForWidth())
@@ -116,11 +126,11 @@ class Ui_Battleship(object):
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.button_setup_exit = QPushButton(self.page_fleet_creator)
         self.button_setup_exit.setObjectName(u"button_setup_exit")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.button_setup_exit.sizePolicy().hasHeightForWidth())
-        self.button_setup_exit.setSizePolicy(sizePolicy4)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.button_setup_exit.sizePolicy().hasHeightForWidth())
+        self.button_setup_exit.setSizePolicy(sizePolicy5)
 
         self.horizontalLayout_4.addWidget(self.button_setup_exit)
 
@@ -137,11 +147,11 @@ class Ui_Battleship(object):
 
         self.label_setup_title = QLabel(self.page_fleet_creator)
         self.label_setup_title.setObjectName(u"label_setup_title")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.label_setup_title.sizePolicy().hasHeightForWidth())
-        self.label_setup_title.setSizePolicy(sizePolicy5)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.label_setup_title.sizePolicy().hasHeightForWidth())
+        self.label_setup_title.setSizePolicy(sizePolicy6)
         font1 = QFont()
         font1.setPointSize(16)
         self.label_setup_title.setFont(font1)
@@ -181,8 +191,8 @@ class Ui_Battleship(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.button_setup_rand = QPushButton(self.page_fleet_creator)
         self.button_setup_rand.setObjectName(u"button_setup_rand")
-        sizePolicy4.setHeightForWidth(self.button_setup_rand.sizePolicy().hasHeightForWidth())
-        self.button_setup_rand.setSizePolicy(sizePolicy4)
+        sizePolicy5.setHeightForWidth(self.button_setup_rand.sizePolicy().hasHeightForWidth())
+        self.button_setup_rand.setSizePolicy(sizePolicy5)
 
         self.horizontalLayout_3.addWidget(self.button_setup_rand)
 
@@ -316,11 +326,11 @@ class Ui_Battleship(object):
 
         self.line = QFrame(self.page_game)
         self.line.setObjectName(u"line")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
-        self.line.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.line.sizePolicy().hasHeightForWidth())
+        self.line.setSizePolicy(sizePolicy7)
         self.line.setFrameShape(QFrame.VLine)
         self.line.setFrameShadow(QFrame.Sunken)
 
@@ -453,19 +463,19 @@ class Ui_Battleship(object):
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.label_htp_title = QLabel(self.page_htp)
         self.label_htp_title.setObjectName(u"label_htp_title")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.label_htp_title.sizePolicy().hasHeightForWidth())
-        self.label_htp_title.setSizePolicy(sizePolicy7)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Minimum)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.label_htp_title.sizePolicy().hasHeightForWidth())
+        self.label_htp_title.setSizePolicy(sizePolicy8)
         self.label_htp_title.setFont(font)
 
         self.verticalLayout_4.addWidget(self.label_htp_title, 0, Qt.AlignHCenter)
 
         self.label_htp_help = QLabel(self.page_htp)
         self.label_htp_help.setObjectName(u"label_htp_help")
-        sizePolicy5.setHeightForWidth(self.label_htp_help.sizePolicy().hasHeightForWidth())
-        self.label_htp_help.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.label_htp_help.sizePolicy().hasHeightForWidth())
+        self.label_htp_help.setSizePolicy(sizePolicy6)
         self.label_htp_help.setWordWrap(True)
 
         self.verticalLayout_4.addWidget(self.label_htp_help)
@@ -490,13 +500,69 @@ class Ui_Battleship(object):
         self.verticalLayout_5.addItem(self.verticalSpacer_7)
 
         self.stackedWidget.addWidget(self.page_htp)
+        self.page = QWidget()
+        self.page.setObjectName(u"page")
+        self.verticalLayout_15 = QVBoxLayout(self.page)
+        self.verticalLayout_15.setObjectName(u"verticalLayout_15")
+        self.verticalSpacer_17 = QSpacerItem(20, 131, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_15.addItem(self.verticalSpacer_17)
+
+        self.horizontalLayout_16 = QHBoxLayout()
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalSpacer_21 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_16.addItem(self.horizontalSpacer_21)
+
+        self.verticalLayout_14 = QVBoxLayout()
+        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
+        self.label_settings = QLabel(self.page)
+        self.label_settings.setObjectName(u"label_settings")
+        sizePolicy2.setHeightForWidth(self.label_settings.sizePolicy().hasHeightForWidth())
+        self.label_settings.setSizePolicy(sizePolicy2)
+        self.label_settings.setFont(font)
+        self.label_settings.setAlignment(Qt.AlignCenter)
+
+        self.verticalLayout_14.addWidget(self.label_settings)
+
+        self.verticalSpacer_16 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_14.addItem(self.verticalSpacer_16)
+
+        self.checkbox_settings_mma = QCheckBox(self.page)
+        self.checkbox_settings_mma.setObjectName(u"checkbox_settings_mma")
+        sizePolicy5.setHeightForWidth(self.checkbox_settings_mma.sizePolicy().hasHeightForWidth())
+        self.checkbox_settings_mma.setSizePolicy(sizePolicy5)
+
+        self.verticalLayout_14.addWidget(self.checkbox_settings_mma)
+
+        self.button_settings_back = QPushButton(self.page)
+        self.button_settings_back.setObjectName(u"button_settings_back")
+
+        self.verticalLayout_14.addWidget(self.button_settings_back, 0, Qt.AlignHCenter)
+
+
+        self.horizontalLayout_16.addLayout(self.verticalLayout_14)
+
+        self.horizontalSpacer_22 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_16.addItem(self.horizontalSpacer_22)
+
+
+        self.verticalLayout_15.addLayout(self.horizontalLayout_16)
+
+        self.verticalSpacer_18 = QSpacerItem(20, 131, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_15.addItem(self.verticalSpacer_18)
+
+        self.stackedWidget.addWidget(self.page)
 
         self.horizontalLayout_2.addWidget(self.stackedWidget)
 
         Battleship.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(Battleship)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 630, 21))
+        self.menubar.setGeometry(QRect(0, 0, 770, 27))
         Battleship.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(Battleship)
         self.statusbar.setObjectName(u"statusbar")
@@ -514,6 +580,7 @@ class Ui_Battleship(object):
         Battleship.setWindowTitle(QCoreApplication.translate("Battleship", u"Battleship", None))
         self.label_title.setText(QCoreApplication.translate("Battleship", u"Battleship", None))
         self.button_main_play.setText(QCoreApplication.translate("Battleship", u"Play", None))
+        self.button_main_settings.setText(QCoreApplication.translate("Battleship", u"Settings", None))
         self.button_main_htp.setText(QCoreApplication.translate("Battleship", u"Help", None))
         self.button_main_quit.setText(QCoreApplication.translate("Battleship", u"Quit", None))
         self.button_setup_exit.setText(QCoreApplication.translate("Battleship", u"Back", None))
@@ -531,5 +598,8 @@ class Ui_Battleship(object):
 "The game screen consists of two boards and two sets of fleet displays, and a message log, where you can see what has been happening in the last few moves. To shoot at a certain field, click on it with the left mouse button, to mark or unmark that field, click on it with the right mouse button. The ene"
                         "my will move every one second when it's their turn. The player who first destroys the rival's fleet wins. Good luck!", None))
         self.button_htp_back.setText(QCoreApplication.translate("Battleship", u"Back", None))
+        self.label_settings.setText(QCoreApplication.translate("Battleship", u"Settings", None))
+        self.checkbox_settings_mma.setText(QCoreApplication.translate("Battleship", u"Automatically mark misses around sunken ships", None))
+        self.button_settings_back.setText(QCoreApplication.translate("Battleship", u"Back", None))
     # retranslateUi
 

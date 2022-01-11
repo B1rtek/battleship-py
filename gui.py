@@ -3,7 +3,7 @@ from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtWidgets import QToolButton, QSizePolicy, \
     QGridLayout
 
-from board import FieldStatus, translate_coordinates, Board
+from board import FieldStatus, game_to_array_coords, Board
 from fleet import Fleet, Ship
 
 
@@ -165,13 +165,13 @@ class UIBoard:
             for c_x in "abcdefghij":
                 new_status = display_board.get_field_status(c_x, c_y)
                 if self._cached_board.get_field_status(c_x, c_y) != new_status:
-                    x, y = translate_coordinates(c_x, c_y)
+                    x, y = game_to_array_coords(c_x, c_y)
                     self._button_array[y][x].setIcon(self._icons[new_status])
                     self._cached_board.set_field_status(c_x, c_y, new_status)
         if selected_ship is not None:
             selected = selected_ship.get_segment_coordinates()
             for c_x, c_y in selected:
-                x, y = translate_coordinates(c_x, c_y)
+                x, y = game_to_array_coords(c_x, c_y)
                 self._button_array[y][x].setIcon(
                     self._icons[FieldStatus.SELECTED])
                 self._cached_board.set_field_status(c_x, c_y,

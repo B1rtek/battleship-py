@@ -18,12 +18,11 @@ class Settings:
             Setting.MARK_MISSES_AROUND: True
         }
 
-    def toggle_mark_misses_around(self):
+    def set_mark_misses_around(self, new_state: bool):
         """
         Toggles the "Mark misses around sunken ships" setting
         """
-        self._settings[Setting.MARK_MISSES_AROUND] = not self._settings[
-            Setting.MARK_MISSES_AROUND]
+        self._settings[Setting.MARK_MISSES_AROUND] = new_state
 
     def get_settings(self) -> dict:
         return self._settings
