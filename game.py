@@ -1,6 +1,7 @@
 from board import GameBoard, Board
 from enemy import Enemy
 from fleet import Fleet, field_on_board
+from settings import Setting, Settings
 
 
 class Game:
@@ -20,6 +21,15 @@ class Game:
         self._players_turn = True
         self._won = False
         self._messages = []
+        self._settings = None
+        self.apply_settings(None)
+
+    def apply_settings(self, settings: dict = None):
+        if settings is None:
+            default_settings = Settings()
+            self._settings = default_settings.get_settings()
+        else:
+            self._settings = settings
 
     def start_game(self, player_board: Board, player_fleet: Fleet):
         """
@@ -225,6 +235,8 @@ class Game:
                 self._message_enemy_ship_sunk()
                 ship_to_sink = self._enemy_fleet.find_ship(x, y)
                 self._enemy_board.sink_ship(ship_to_sink)
+                if self._settings[Setting.MARK_MISSES_AROUND]:
+                    self._enemy_board.mark_misses_around(ship_to_sink)
                 self._check_win()
         else:
             self._message_player_miss()

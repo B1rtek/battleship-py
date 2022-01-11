@@ -11,6 +11,7 @@ from board import FieldStatus
 from fleet_creator import FleetCreator
 from game import Game
 from gui import UIBoard, load_icons, UIFleet
+from settings import Settings
 from ui_battleship import Ui_Battleship
 
 
@@ -18,25 +19,28 @@ class AppState(Enum):
     MAIN_MENU = 0,
     SETUP = 1,
     GAME = 2,
-    HOW_TO_PLAY = 3
+    HOW_TO_PLAY = 3,
+    SETTINGS = 4
 
 
 class Command(Enum):
     NOP = 0,
     MAIN_START_SETUP = 1,
-    MAIN_START_HTP = 2,
-    MAIN_EXIT = 3,
-    EXIT_TO_MAIN = 4,
-    CREATOR_SHIP_SELECT = 5,
-    CREATOR_SHIP_MOVE = 6,
-    CREATOR_SHIP_ROTATE = 7,
-    CREATOR_FLEET_RAND = 8,
-    CREATOR_DONE = 9,
-    CREATOR_HELP = 10,
-    GAME_SHOOT = 11,
-    GAME_MARK_FIELD = 12,
-    GAME_UNMARK_FIELD = 13,
-    GAME_HELP = 14
+    MAIN_SETTINGS = 2,
+    MAIN_START_HTP = 3,
+    MAIN_EXIT = 4,
+    EXIT_TO_MAIN = 5,
+    CREATOR_SHIP_SELECT = 6,
+    CREATOR_SHIP_MOVE = 7,
+    CREATOR_SHIP_ROTATE = 8,
+    CREATOR_FLEET_RAND = 9,
+    CREATOR_DONE = 10,
+    CREATOR_HELP = 11,
+    GAME_SHOOT = 12,
+    GAME_MARK_FIELD = 13,
+    GAME_UNMARK_FIELD = 14,
+    GAME_HELP = 15,
+    SETTINGS_MMA = 16
 
 
 def cls():
@@ -60,6 +64,7 @@ class BattleshipCMD:
         """
         self._fleet_creator = FleetCreator()
         self._game = Game()
+        self._settings = Settings()
         self._state = AppState.MAIN_MENU
         self._quit = False
         self._prompt = "> "
@@ -75,8 +80,10 @@ class BattleshipCMD:
             self._display_fleet_creator()
         elif self._state == AppState.GAME:
             self._display_game()
-        else:  # AppState.HOW_TO_PLAY
+        elif self._state == AppState.HOW_TO_PLAY:
             self._display_help()
+        else:
+            self._display_settings()
 
     def _display_main_menu(self):
         """
@@ -84,8 +91,9 @@ class BattleshipCMD:
         """
         menu_content = "Welcome to Battleship!\n" \
                        "1. Play the game\n" \
-                       "2. How to play\n" \
-                       "3. Exit\n" \
+                       "2. Settings\n" \
+                       "3. How to play\n" \
+                       "4. Exit\n" \
                        "\n"
         print(menu_content)
 
@@ -132,6 +140,18 @@ class BattleshipCMD:
                        "there isn't, the enemy gets to move.\n"
         print(help_content)
 
+    def _display_settings(self):
+        """
+        Displays the settings page
+        """
+        settings_list = [
+            "1. Mark fields around sunken ships:"
+        ]
+        settings = self._settings.get_settings()
+        states = ["Yes" if x else "No" for x in settings.values()]
+        for setting, state in zip(settings_list, states):
+            print(f"{setting} {state}")
+
     def _player_input(self) -> tuple[Command, str, int]:
         """
         Handles user input and interprets it, creating a command tuple
@@ -146,8 +166,10 @@ class BattleshipCMD:
             return self._player_input_fleet_creator(command_parts)
         elif self._state == AppState.GAME:
             return self._player_input_game(command_parts)
-        else:
+        elif self._state == AppState.HOW_TO_PLAY:
             return Command.EXIT_TO_MAIN, "", 0
+        else:
+            return self._player_input_settings(command_parts)
 
     def _player_input_main_menu(self, command_parts: list[str]) -> \
             tuple[Command, str, int]:
@@ -163,8 +185,10 @@ class BattleshipCMD:
             if command_parts[0].startswith('1'):
                 return Command.MAIN_START_SETUP, "", 0
             elif command_parts[0].startswith('2'):
-                return Command.MAIN_START_HTP, "", 0
+                return Command.MAIN_SETTINGS, "", 0
             elif command_parts[0].startswith('3'):
+                return Command.MAIN_START_HTP, "", 0
+            elif command_parts[0].startswith('4'):
                 return Command.MAIN_EXIT, "", 0
             else:
                 return Command.NOP, "", 0
@@ -235,6 +259,16 @@ class BattleshipCMD:
         else:
             return Command.NOP, "", 0
 
+    def _player_input_settings(self, command_parts: list[str]) -> \
+            tuple[Command, str, int]:
+        if len(command_parts) == 0:
+            return Command.NOP, "", 0
+        else:
+            if command_parts[0].startswith('1'):
+                return Command.SETTINGS_MMA, "", 0
+            else:
+                return Command.EXIT_TO_MAIN, "", 0
+
     def _execute(self, command, x, y):
         """
         Executes user's command
@@ -253,6 +287,8 @@ class BattleshipCMD:
             self._execute_game(command, x, y)
         elif self._state == AppState.HOW_TO_PLAY:
             self._state = AppState.MAIN_MENU
+        elif self._state == AppState.SETTINGS:
+            self._execute_settings(command)
 
     def _execute_main_menu(self, command):
         """
@@ -263,6 +299,8 @@ class BattleshipCMD:
         if command == Command.MAIN_START_SETUP:
             self._fleet_creator.start()
             self._state = AppState.SETUP
+        elif command == Command.MAIN_SETTINGS:
+            self._state = AppState.SETTINGS
         elif command == Command.MAIN_START_HTP:
             self._state = AppState.HOW_TO_PLAY
         elif command == Command.MAIN_EXIT:
@@ -321,6 +359,13 @@ class BattleshipCMD:
                     self._game.game_help()
                 elif command == Command.EXIT_TO_MAIN:
                     self._state = AppState.MAIN_MENU
+
+    def _execute_settings(self, command: Command):
+        if command == Command.SETTINGS_MMA:
+            self._settings.toggle_mark_misses_around()
+        else:
+            self._game.apply_settings(self._settings.get_settings())
+            self._state = AppState.MAIN_MENU
 
     def start(self):
         """

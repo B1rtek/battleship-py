@@ -1,6 +1,6 @@
 from enum import Enum
 
-from fleet import Ship, Fleet
+from fleet import Ship, Fleet, mark_misses_around
 
 
 class FieldStatus(Enum):
@@ -33,8 +33,10 @@ class Field:
             return '.'
         elif self._status == FieldStatus.SHIP:
             return '█'
-        else:  # FieldStatus.SUNK
+        elif self._status == FieldStatus.SUNK:
             return '▒'
+        else:  # FieldStatus.SELECTED
+            return '#'
 
     def status(self) -> FieldStatus:
         return self._status
@@ -43,7 +45,19 @@ class Field:
         self._status = new_status
 
 
-def translate_coordinates(x: str, y: int) -> tuple[int, int]:
+class InvalidGameCoordinatesError(Exception):
+    """
+    Raised when provided game coordinates result in invalid
+    array coordinates after translation
+    """
+
+    def __init__(self, x: str, y: int):
+        self.x = x
+        self.y = y
+        super().__init__(f"Invalid game coordinates specified: {x}, {y}")
+
+
+def game_to_array_coords(x: str, y: int) -> tuple[int, int]:
     """
     Function used to translate in-game coordinates (like a 7) to board field
     coordinates (a 7 is 0 6, since a is the first column and 7 is the 7th row,
@@ -57,6 +71,7 @@ def translate_coordinates(x: str, y: int) -> tuple[int, int]:
     x = x.lower()
     coord_x = ord(x) - 97
     coord_y = y - 1
+    # if (not 0 <= coord_x <= 9 ) or (not )
     return coord_x, coord_y
 
 
@@ -144,7 +159,7 @@ class Board:
         :type y: int
         :return: status of the specified field
         """
-        c_x, c_y = translate_coordinates(x, y)
+        c_x, c_y = game_to_array_coords(x, y)
         return self._fields[c_y][c_x].status()
 
     def set_field_status(self, x: str, y: int, status: FieldStatus):
@@ -157,7 +172,7 @@ class Board:
         :param status: new status of a field
         :type status: FieldStatus
         """
-        c_x, c_y = translate_coordinates(x, y)
+        c_x, c_y = game_to_array_coords(x, y)
         self._fields[c_y][c_x].set_status(status)
 
 
@@ -275,3 +290,7 @@ class GameBoard:
         """
         return self._visible_board.get_field_status(x,
                                                     y) == FieldStatus.NOTHING
+
+    def mark_misses_around(self, ship_to_mark_around: Ship):
+        mark_misses_around(ship_to_mark_around, self._visible_board)
+        self.sink_ship(ship_to_mark_around)
