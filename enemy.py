@@ -30,12 +30,32 @@ def create_list_of_tangents(source: tuple[str, int]) -> list:
             (chr(ord(x) - 1), y + 1), (chr(ord(x) + 1), y + 1)]
 
 
+def upper_field(coords: tuple[str, int]) -> tuple[str, int]:
+    x, y = coords
+    return x, y - 1
+
+
+def lower_field(coords: tuple[str, int]) -> tuple[str, int]:
+    x, y = coords
+    return x, y + 1
+
+
+def left_field(coords: tuple[str, int]) -> tuple[str, int]:
+    x, y = coords
+    return chr(ord(x) - 1), y
+
+
+def right_field(coords: tuple[str, int]) -> tuple[str, int]:
+    x, y = coords
+    return chr(ord(x) + 1), y
+
+
 class Enemy:
     """
     Class representing the computer opponent
     """
 
-    def __init__(self):
+    def __init__(self, hard_mode: bool = False):
         """
         Creates an Enemy class, initializing 3 lists - a list of undiscovered
         fields which Enemy will shoot randomly at, a list of to_shoot fields,
@@ -50,6 +70,7 @@ class Enemy:
             for y in range(1, 11):
                 self._undiscovered.append((x, y))
         self._last_target = None
+        self._hard_mode = True
 
     def shoot(self) -> tuple[str, int]:
         """
@@ -63,10 +84,52 @@ class Enemy:
                 self._undiscovered.remove(chosen)
                 self._last_target = chosen
                 return chosen
-        chosen = choice(self._undiscovered)
+        if self._hard_mode:
+            chosen = self._rank_fields_and_choose()
+        else:
+            chosen = choice(self._undiscovered)
         self._undiscovered.remove(chosen)
         self._last_target = chosen
         return chosen
+
+    def _rank_fields_and_choose(self) -> tuple[str, int]:
+        """
+        Creates a list of fields sorted by the maximum length of a ship that
+        can be located there, and then returns coordinates of one with the
+        highest score
+        """
+        rank_list = []
+        for field in self._undiscovered:
+            score_vert = 1
+            score_horz = 1
+            workfield = deepcopy(field)
+            workfield = upper_field(workfield)
+            while workfield in self._undiscovered:
+                score_vert = score_vert + 1
+                workfield = upper_field(workfield)
+            workfield = deepcopy(field)
+            workfield = lower_field(workfield)
+            while workfield in self._undiscovered:
+                score_vert = score_vert + 1
+                workfield = lower_field(workfield)
+            workfield = deepcopy(field)
+            workfield = right_field(workfield)
+            while workfield in self._undiscovered:
+                score_horz = score_horz + 1
+                workfield = right_field(workfield)
+            workfield = deepcopy(field)
+            workfield = left_field(workfield)
+            while workfield in self._undiscovered:
+                score_horz = score_horz + 1
+                workfield = left_field(workfield)
+            rank_list.append((max(score_vert, score_horz), field))
+        # awkward sorting because sorted() doesn't want to work
+        best_fields = []
+        max_score = max(x[0] for x in rank_list)
+        for score, field in rank_list:
+            if score == max_score:
+                best_fields.append(field)
+        return choice(best_fields)
 
     def react_to_hit(self):
         """

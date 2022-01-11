@@ -40,7 +40,7 @@ class Game:
         :type player_fleet: Fleet
         """
         self._player_board = GameBoard(player_board)
-        self._enemy = Enemy()
+        self._enemy = Enemy(self._settings[Setting.HARD_ENEMY])
         self._player_fleet = player_fleet
         self._create_enemy_fleet()
         self._players_turn = True
