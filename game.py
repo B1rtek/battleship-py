@@ -237,7 +237,7 @@ class Game:
                 self._enemy_board.sink_ship(ship_to_sink)
                 if self._settings[Setting.MARK_MISSES_AROUND]:
                     self._enemy_board.mark_misses_around(ship_to_sink)
-                self._check_win()
+                self.check_win()
         else:
             self._message_player_miss()
         return hit
@@ -296,7 +296,7 @@ class Game:
                 ship_to_sink = self._player_fleet.find_ship(x, y)
                 self._player_board.sink_ship(ship_to_sink)
                 self._enemy.react_to_sink()
-                self._check_win()
+                self.check_win()
         else:
             self._players_turn = True
             self._message_enemy_miss()
@@ -307,16 +307,19 @@ class Game:
                 self._player_board.mark_as_empty(m_x, m_y)
         return hit
 
-    def _check_win(self):
+    def check_win(self):
         """
         Checks if one of the players won the game
+        :return: True if the player won, False if the computer enemy won
         """
         if not self._player_fleet.is_alive():
             self._message_enemy_win()
             self._won = True
+            return False
         if not self._enemy_fleet.is_alive():
             self._message_player_win()
             self._won = True
+            return True
 
     def players_turn(self) -> bool:
         return self._players_turn

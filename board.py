@@ -1,6 +1,6 @@
 from enum import Enum
 
-from fleet import Ship, Fleet, mark_misses_around
+import fleet
 
 
 class FieldStatus(Enum):
@@ -71,8 +71,21 @@ def game_to_array_coords(x: str, y: int) -> tuple[int, int]:
     x = x.lower()
     coord_x = ord(x) - 97
     coord_y = y - 1
-    # if (not 0 <= coord_x <= 9 ) or (not )
+    if (not 0 <= coord_x <= 9) or (not 0 <= coord_y <= 9):
+        raise InvalidGameCoordinatesError(x, y)
     return coord_x, coord_y
+
+
+def get_all_fields_coordinates():
+    """
+    Returns a list of tuples containing coordinates of all fields on the board
+    :return: a list of 100 tuples with field coordinates
+    """
+    all_fields = []
+    for y in range(1, 11):
+        for x in "abcdefghij":
+            all_fields.append((x, y))
+    return all_fields
 
 
 class Board:
@@ -113,7 +126,7 @@ class Board:
             for x in range(10):
                 self._fields[y][x].set_status(FieldStatus.NOTHING)
 
-    def place_ship(self, ship: Ship):
+    def place_ship(self, ship: "fleet.Ship"):
         """
         Places a ship on the board by marking all fields it occupies with a
         status of FieldStatus.SHIP
@@ -125,7 +138,7 @@ class Board:
             x, y = segment.position()
             self.set_field_status(x, y, FieldStatus.SHIP)
 
-    def place_fleet(self, fleet_to_place: Fleet):
+    def place_fleet(self, fleet_to_place: "fleet.Fleet"):
         """
         Places ships defined in ships on the board
         :param fleet_to_place: a Fleet containing player's ships
@@ -139,7 +152,7 @@ class Board:
         for ship in ships:
             self.place_ship(ship)
 
-    def mark_sunken_ship(self, ship_to_sink: Ship):
+    def mark_sunken_ship(self, ship_to_sink: "fleet.Ship"):
         """
         Marks a given ship as a sunken ship on the board
         :param ship_to_sink: Ship to be marked as sunken
@@ -249,7 +262,7 @@ class GameBoard:
         self._visible_board.set_field_status(x, y, FieldStatus.NOTHING)
         return True
 
-    def sink_ship(self, ship_to_sink: Ship):
+    def sink_ship(self, ship_to_sink: "fleet.Ship"):
         """
         Called when a ship in a fleet has sunk to mark him as sunk on the map
         :param ship_to_sink: Ship to be sunk
@@ -291,6 +304,6 @@ class GameBoard:
         return self._visible_board.get_field_status(x,
                                                     y) == FieldStatus.NOTHING
 
-    def mark_misses_around(self, ship_to_mark_around: Ship):
-        mark_misses_around(ship_to_mark_around, self._visible_board)
+    def mark_misses_around(self, ship_to_mark_around: "fleet.Ship"):
+        fleet.mark_misses_around(ship_to_mark_around, self._visible_board)
         self.sink_ship(ship_to_mark_around)
