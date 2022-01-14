@@ -8,7 +8,7 @@ for x in "abcdefghij":
     for y in range(1, 11):
         hitmap[(x, y)] = 0
 fleet = Fleet()
-for i in range(10000):
+for i in range(1000000):
     fleet.create_random()
     ships = fleet.ships()
     for ship in ships:

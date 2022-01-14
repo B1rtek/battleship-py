@@ -33,8 +33,7 @@ def translate_coords(x: int, y: int) -> tuple[str, int]:
 
 # Original code by Oleh Prypin distributed under terms of the CC BY-SA 4.0
 # license
-# Source: https://stackoverflow.com/questions/11008140/pyqt-custom
-# -widget-fixed-as-square
+# Source: https://stackoverflow.com/questions/11008140/pyqt-custom-widget-fixed-as-square
 class BoardButton(QToolButton):
     """
     Represents a single button on the board and a segment displaying a ship

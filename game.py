@@ -307,7 +307,7 @@ class Game:
                 self._player_board.mark_as_empty(m_x, m_y)
         return hit
 
-    def check_win(self):
+    def check_win(self) -> bool:
         """
         Checks if one of the players won the game
         :return: True if the player won, False if the computer enemy won

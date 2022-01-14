@@ -88,6 +88,14 @@ def get_all_fields_coordinates():
     return all_fields
 
 
+def return_all_field_coordinates():
+    all_fields = []
+    for x in "abcdefghij":
+        for y in range(1, 11):
+            all_fields.append((x, y))
+    return all_fields
+
+
 class Board:
     """
     Class being an array of fields, representing a 10x10 board

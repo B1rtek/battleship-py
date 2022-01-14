@@ -70,7 +70,7 @@ class Enemy:
             for y in range(1, 11):
                 self._undiscovered.append((x, y))
         self._last_target = None
-        self._hard_mode = True
+        self._hard_mode = hard_mode
 
     def shoot(self) -> tuple[str, int]:
         """
