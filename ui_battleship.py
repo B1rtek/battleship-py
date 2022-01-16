@@ -534,7 +534,16 @@ class Ui_Battleship(object):
         sizePolicy5.setHeightForWidth(self.checkbox_settings_mma.sizePolicy().hasHeightForWidth())
         self.checkbox_settings_mma.setSizePolicy(sizePolicy5)
 
-        self.verticalLayout_14.addWidget(self.checkbox_settings_mma)
+        self.verticalLayout_14.addWidget(self.checkbox_settings_mma, 0, Qt.AlignLeft)
+
+        self.checkbox_settings_hard_enemy = QCheckBox(self.page)
+        self.checkbox_settings_hard_enemy.setObjectName(u"checkbox_settings_hard_enemy")
+
+        self.verticalLayout_14.addWidget(self.checkbox_settings_hard_enemy, 0, Qt.AlignLeft)
+
+        self.verticalSpacer_19 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_14.addItem(self.verticalSpacer_19)
 
         self.button_settings_back = QPushButton(self.page)
         self.button_settings_back.setObjectName(u"button_settings_back")
@@ -562,7 +571,7 @@ class Ui_Battleship(object):
         Battleship.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(Battleship)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 770, 27))
+        self.menubar.setGeometry(QRect(0, 0, 770, 21))
         Battleship.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(Battleship)
         self.statusbar.setObjectName(u"statusbar")
@@ -600,6 +609,7 @@ class Ui_Battleship(object):
         self.button_htp_back.setText(QCoreApplication.translate("Battleship", u"Back", None))
         self.label_settings.setText(QCoreApplication.translate("Battleship", u"Settings", None))
         self.checkbox_settings_mma.setText(QCoreApplication.translate("Battleship", u"Automatically mark misses around sunken ships", None))
+        self.checkbox_settings_hard_enemy.setText(QCoreApplication.translate("Battleship", u"Harder computer enemy", None))
         self.button_settings_back.setText(QCoreApplication.translate("Battleship", u"Back", None))
     # retranslateUi
 

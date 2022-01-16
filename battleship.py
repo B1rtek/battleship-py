@@ -40,7 +40,8 @@ class Command(Enum):
     GAME_MARK_FIELD = 13,
     GAME_UNMARK_FIELD = 14,
     GAME_HELP = 15,
-    SETTINGS_MMA = 16
+    SETTINGS_MMA = 16,
+    SETTINGS_HARD_ENEMY = 17
 
 
 def cls():
@@ -145,7 +146,8 @@ class BattleshipCMD:
         Displays the settings page
         """
         settings_list = [
-            "1. Mark fields around sunken ships:"
+            "1. Mark fields around sunken ships:",
+            "2. Harder enemy: "
         ]
         settings = self._settings.get_settings()
         states = ["Yes" if x else "No" for x in settings.values()]
@@ -266,6 +268,8 @@ class BattleshipCMD:
         else:
             if command_parts[0].startswith('1'):
                 return Command.SETTINGS_MMA, "", 0
+            elif command_parts[0].startswith('2'):
+                return Command.SETTINGS_HARD_ENEMY, "", 0
             else:
                 return Command.EXIT_TO_MAIN, "", 0
 
@@ -365,6 +369,10 @@ class BattleshipCMD:
             setting_mma = self._settings.get_settings()[
                 Setting.MARK_MISSES_AROUND]
             self._settings.set_mark_misses_around(not setting_mma)
+        elif command == Command.SETTINGS_HARD_ENEMY:
+            setting_hard_enemy = self._settings.get_settings()[
+                Setting.HARD_ENEMY]
+            self._settings.set_hard_enemy(not setting_hard_enemy)
         else:
             self._game.apply_settings(self._settings.get_settings())
             self._state = AppState.MAIN_MENU
@@ -484,14 +492,20 @@ class BattleshipWindow(QMainWindow):
         self.ui.button_setup_done.clicked.connect(self._fleet_creator_done)
         self.ui.button_game_main.clicked.connect(self._return_to_main)
         self.ui.button_htp_back.clicked.connect(self._return_to_main)
-        self.ui.button_settings_back.clicked.connect(self._settings_save_and_back)
+        self.ui.button_settings_back.clicked.connect(
+            self._settings_save_and_back)
         self.ui.checkbox_settings_mma.stateChanged.connect(
             self._settings_toggle_mma)
+        self.ui.checkbox_settings_hard_enemy.stateChanged.connect(
+            self._settings_toggle_hard_enemy)
 
     def _load_settings(self):
         settings = self._settings.get_settings()
         self.ui.checkbox_settings_mma.setChecked(
             settings[Setting.MARK_MISSES_AROUND])
+        self.ui.checkbox_settings_hard_enemy.setChecked(
+            settings[Setting.HARD_ENEMY])
+        self._game.apply_settings(self._settings.get_settings())
 
     def _fix_pyside2_uic_bug(self):
         """
@@ -663,6 +677,10 @@ class BattleshipWindow(QMainWindow):
     def _settings_toggle_mma(self):
         new_state = self.ui.checkbox_settings_mma.isChecked()
         self._settings.set_mark_misses_around(new_state)
+
+    def _settings_toggle_hard_enemy(self):
+        new_state = self.ui.checkbox_settings_hard_enemy.isChecked()
+        self._settings.set_hard_enemy(new_state)
 
     def _settings_save_and_back(self):
         self._game.apply_settings(self._settings.get_settings())
