@@ -66,7 +66,7 @@ for i in range(tests_amount):
         now = datetime.now()
         time = now.strftime("%H:%M:%S")
         print(f"[{time}] Processed {i} boards...")
-with open("ai_test_results.csv", 'w', newline='') as file_handle:
+with open("enemy_ai_test_results.csv", 'w', newline='') as file_handle:
     headers = [
         "old_ai_rounds", "old_ai_moves", "old_ai_results",
         "new_ai_rounds", "new_ai_moves", "new_ai_results",
