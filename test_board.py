@@ -437,25 +437,25 @@ def test_mark_misses_around(monkeypatch):
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in segments:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
     gboard.mark_misses_around(ship_to_sink)
     for x, y in segments:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.MISS
+            get_field_status(x, y) == FieldStatus.MISS
     # This function is used to automatically mark fields around when the ship
     # sinks, and these markers cannot be seen by the player as they aren't
     # placed by the enemy, but show up on their board automatically
