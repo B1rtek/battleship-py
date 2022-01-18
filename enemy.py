@@ -11,9 +11,8 @@ def create_list_of_adherent(source: tuple[str, int]) -> list:
     :return: list of tuples containing coordinates of fields the would be
     adherent to the given one
     """
-    x, y = source
-    return [(chr(ord(x) - 1), y), (x, y - 1), (chr(ord(x) + 1), y),
-            (x, y + 1)]
+    return [left_field(source), right_field(source), upper_field(source),
+            lower_field(source)]
 
 
 def create_list_of_tangents(source: tuple[str, int]) -> list:
@@ -25,9 +24,8 @@ def create_list_of_tangents(source: tuple[str, int]) -> list:
     :return: list of tuples containing coordinates of fields that touch the
     source field's corners
     """
-    x, y = source
-    return [(chr(ord(x) - 1), y - 1), (chr(ord(x) + 1), y - 1),
-            (chr(ord(x) - 1), y + 1), (chr(ord(x) + 1), y + 1)]
+    return [left_field(upper_field(source)), right_field(upper_field(source)),
+            left_field(lower_field(source)), right_field(lower_field(source))]
 
 
 def upper_field(coords: tuple[str, int]) -> tuple[str, int]:
