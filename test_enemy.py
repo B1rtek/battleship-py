@@ -263,3 +263,131 @@ def test_enemy_react_to_hit_corner(monkeypatch):
             assert field not in enemy._to_mark_as_empty
         else:
             assert field in enemy._to_mark_as_empty
+
+
+def test_enemy_react_to_sink_small_ship_typical(monkeypatch):
+    target = ('b', 5)
+
+    def rigged_shoot(self):
+        self._undiscovered.remove(target)
+        self._last_target = target
+        return target
+
+    monkeypatch.setattr('enemy.Enemy.shoot', rigged_shoot)
+
+    enemy = Enemy()
+    enemy.shoot()
+    enemy.react_to_hit()
+    enemy.react_to_sink()
+    to_mark_as_empty = create_list_of_adherent(
+        target) + create_list_of_tangents(target)
+    assert not enemy._to_shoot
+    for field in enemy._to_mark_as_empty:
+        assert field in to_mark_as_empty
+    # length of these lists might not be equal as the _to_mark_as_empty list
+    # might contain duplicates, so we can't just check for equal len()
+    for field in to_mark_as_empty:
+        assert field in enemy._to_mark_as_empty
+    to_mark_as_empty.append(target)
+    for field in to_mark_as_empty:
+        assert field not in enemy._undiscovered
+
+
+def test_enemy_react_to_sink_small_ship_edge(monkeypatch):
+    target = ('b', 1)
+
+    def rigged_shoot(self):
+        self._undiscovered.remove(target)
+        self._last_target = target
+        return target
+
+    monkeypatch.setattr('enemy.Enemy.shoot', rigged_shoot)
+
+    enemy = Enemy()
+    enemy.shoot()
+    enemy.react_to_hit()
+    enemy.react_to_sink()
+    to_mark_as_empty = create_list_of_adherent(
+        target) + create_list_of_tangents(target)
+    to_mark_as_empty.remove(('a', 0))
+    to_mark_as_empty.remove(('b', 0))
+    to_mark_as_empty.remove(('c', 0))
+    assert not enemy._to_shoot
+    for field in enemy._to_mark_as_empty:
+        assert field in to_mark_as_empty
+    for field in to_mark_as_empty:
+        assert field in enemy._to_mark_as_empty
+    to_mark_as_empty.append(target)
+    for field in to_mark_as_empty:
+        assert field not in enemy._undiscovered
+
+
+def test_enemy_react_to_sink_small_ship_corner(monkeypatch):
+    target = ('a', 1)
+
+    def rigged_shoot(self):
+        self._undiscovered.remove(target)
+        self._last_target = target
+        return target
+
+    monkeypatch.setattr('enemy.Enemy.shoot', rigged_shoot)
+
+    enemy = Enemy()
+    enemy.shoot()
+    enemy.react_to_hit()
+    enemy.react_to_sink()
+    to_mark_as_empty = [('a', 2), ('b', 1), ('b', 2)]
+    assert not enemy._to_shoot
+    for field in enemy._to_mark_as_empty:
+        assert field in to_mark_as_empty
+    for field in to_mark_as_empty:
+        assert field in enemy._to_mark_as_empty
+    to_mark_as_empty.append(target)
+    for field in to_mark_as_empty:
+        assert field not in enemy._undiscovered
+
+
+# the following tests test both react_to_sink() and mark_as_empty(),
+# as they work together while shooting down bigger ships, enemy needs to call
+# these methods to work properly, unlike the single segment ship tests, where
+# the enemy wouldn't have to shoot down any more segments
+
+
+def test_enemy_react_to_sink_big_ship_typical(monkeypatch):
+    targets = [('d', 3), ('d', 4), ('d', 5), ('d', 6)]
+    target = targets[0]
+
+    def rigged_shoot(self):
+        target = targets[0]
+        targets.remove(target)
+        self._undiscovered.remove(target)
+        self._last_target = target
+        return target
+
+    monkeypatch.setattr('enemy.Enemy.shoot', rigged_shoot)
+
+    enemy = Enemy()
+
+    # board in the next 4 moves:
+    # (of course, in the actual game enemy might not guess the orientation
+    # instantly, that's why monkeypatch is being used here, in the end all
+    # fields around the ship should be marked
+    #  cde|cde|cde|cde|cde
+    # 2   |. .|. .|. .|...
+    # 3 █ | ▒ |.▒.|.▒.|.▒.
+    # 4 █ |.█.|.▒.|.▒.|.▒.
+    # 5 █ | █ |.█.|.▒.|.▒.
+    # 6 █ | █ | █ |.█.|.▒.
+    # 7   |   |   |   |...
+
+    enemy.shoot()
+    enemy.react_to_hit()
+    mark_as_empty = enemy.mark_as_empty()
+    to_mark_as_empty = create_list_of_tangents(target)
+    for field in mark_as_empty:
+        assert field in to_mark_as_empty
+    assert len(to_mark_as_empty) == len(mark_as_empty)
+    # todo next shots
+
+    enemy.react_to_hit()
+    enemy.react_to_sink()
