@@ -514,3 +514,54 @@ def test_enemy_react_to_sink_big_ship_corner_beginning(monkeypatch):
         assert field in mark_as_empty
     for x, y in mark_as_empty:
         assert x <= 'b' and y <= 5
+
+
+def test_enemy_react_to_sink_big_ship_corner_end(monkeypatch):
+    targets = [('j', 7), ('j', 8), ('j', 9), ('j', 10)]
+
+    def rigged_shoot(self):
+        target = targets[0]
+        targets.remove(target)
+        self._undiscovered.remove(target)
+        self._last_target = target
+        return target
+
+    monkeypatch.setattr('enemy.Enemy.shoot', rigged_shoot)
+
+    enemy = Enemy()
+
+    # board in the next 4 moves:
+    #    ij|ij|ij|ij|ij|
+    #  6|  |. |. |. |..|
+    #  7| █| ▒|.▒|.▒|.▒|
+    #  8| █|.█|.▒|.▒|.▒|
+    #  9| █| █|.█|.▒|.▒|
+    # 10| █| █| █|.█|.▒|
+    # --+--+--+--+--+--+
+
+    enemy.shoot()
+    enemy.react_to_hit()
+    mark_as_empty = enemy.mark_as_empty()
+    to_mark_as_empty = [('i', 6), ('i', 8)]
+    for field in mark_as_empty:
+        assert field in to_mark_as_empty
+    assert len(to_mark_as_empty) == len(mark_as_empty)
+    enemy.shoot()
+    enemy.react_to_hit()
+    mark_as_empty = enemy.mark_as_empty()
+    to_mark_as_empty = [('i', 7), ('i', 9)]
+    for field in mark_as_empty:
+        assert field in to_mark_as_empty
+    assert len(to_mark_as_empty) == len(mark_as_empty)
+    enemy.shoot()
+    enemy.react_to_hit()
+    mark_as_empty = enemy.mark_as_empty()
+    assert len(mark_as_empty) == 1
+    assert ('i', 10) in mark_as_empty
+    enemy.shoot()
+    enemy.react_to_hit()
+    enemy.react_to_sink()
+    mark_as_empty = enemy.mark_as_empty()
+    assert ('j', 6) in mark_as_empty
+    for x, y in mark_as_empty:
+        assert x >= 'i' and y >= 6
