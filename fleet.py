@@ -3,6 +3,7 @@ from random import choice
 from typing import List
 
 import board
+from enemy import create_list_of_adherent, create_list_of_tangents
 
 
 class ShipSegment:
@@ -78,6 +79,55 @@ class Ship:
         for x, y in field_coordinates:
             self._segments.append(ShipSegment(x, y))
 
+    def get_segment_coordinates(self) -> List[tuple]:
+        """
+        Returns coordinates of segments that make this ship
+        :return: a list tuples with segment coordinates
+        """
+        segments = []
+        for segment in self._segments:
+            segments.append(segment.position())
+        return segments
+
+    def check_if_belongs(self, x: str, y: int) -> bool:
+        """
+        Checks if the given coordinates belong to any of this Ship's segments
+        :param x: x coordinate of a field
+        :type x: str
+        :param y: y coordinate of a field
+        :type y: int
+        :return: True if the given coordinates belong to this Ship's segments,
+        otherwise False
+        """
+        for segment in self._segments:
+            if segment.position() == (x, y):
+                return True
+        return False
+
+    def sink(self, x: str, y: int):
+        """
+        Sinks the specified segment of this ship. Always called after
+        check_if_belongs
+        :param x: x coordinate of a segment
+        :type x: str
+        :param y: y coordinate of a segment
+        :type y: int
+        """
+        for segment in self._segments:
+            if segment.position() == (x, y):
+                segment.sink()
+                return
+
+    def sunk(self) -> bool:
+        """
+        Checks if this Ship sunk, checking if all of its segments sunk
+        :return: True if it did, False otherwise
+        """
+        for segment in self._segments:
+            if not segment.sunk():
+                return False
+        return True
+
     def ship_to_str(self, draw_as_enemy: bool = False) -> str:
         """
         Prints out a representation of the ship's condition in a graphical form
@@ -98,45 +148,6 @@ class Ship:
             representation += '▒' if segment.sunk() else '█'
         return representation
 
-    def check_if_belongs(self, x: str, y: int) -> bool:
-        """
-        Checks if the given coordinates belong to any of this Ship's segments
-        :param x: x coordinate of a field
-        :type x: str
-        :param y: y coordinate of a field
-        :type y: int
-        :return: True if the given coordinates belong to this Ship's segments,
-        otherwise False
-        """
-        for segment in self._segments:
-            if segment.position() == (x, y):
-                return True
-        return False
-
-    def sunk(self) -> bool:
-        """
-        Checks if this Ship sunk, checking if all of its segments sunk
-        :return: True if it did, False otherwise
-        """
-        for segment in self._segments:
-            if not segment.sunk():
-                return False
-        return True
-
-    def sink(self, x: str, y: int):
-        """
-        Sinks the specified segment of this ship. Always called after
-        check_if_belongs
-        :param x: x coordinate of a segment
-        :type x: str
-        :param y: y coordinate of a segment
-        :type y: int
-        """
-        for segment in self._segments:
-            if segment.position() == (x, y):
-                segment.sink()
-                return
-
     def segments(self) -> List[ShipSegment]:
         return self._segments
 
@@ -149,31 +160,8 @@ class Ship:
     def origin(self) -> tuple[str, int]:
         return self._origin
 
-    def get_segment_coordinates(self) -> List[tuple]:
-        """
-        Returns coordinates of segments that make this ship
-        :return: a list tuples with segment coordinates
-        """
-        segments = []
-        for segment in self._segments:
-            segments.append(segment.position())
-        return segments
-
 
 valid_x_coords = "abcdefghij"
-
-
-def field_on_board(field: tuple[str, int]) -> bool:
-    """
-    Checks if given coordinates are a coordinates of a valid field on a board
-    :param field: tuple of a field's coordinates
-    :type field: tuple
-    :return: True if coordinates point to a field on the board, otherwise False
-    """
-    x, y = field
-    if x in valid_x_coords and 1 <= y <= 10:
-        return True
-    return False
 
 
 def field_available(temp_ship, temp_board) -> bool:
@@ -187,10 +175,9 @@ def field_available(temp_ship, temp_board) -> bool:
     :type temp_board: Board
     :return: True if the proposed Ship can be placed, False otherwise
     """
-    fields = [segment.position() for segment in
-              temp_ship.segments()]
+    fields = temp_ship.get_segment_coordinates()
     for field in fields:
-        if field_on_board(field):
+        if board.field_on_board(field):
             f_x, f_y = field
             status = temp_board.get_field_status(f_x, f_y)
             if status != board.FieldStatus.NOTHING:
@@ -200,28 +187,47 @@ def field_available(temp_ship, temp_board) -> bool:
     return True
 
 
+def fields_around_field(source: tuple[str, int]) -> List[tuple]:
+    """
+    Creates a list of fields around the specified field
+    :param source: the field to generate surrounding fields of
+    :type source: tuple
+    :return: list containing coordinates of all fields around the source field
+    """
+    return create_list_of_adherent(source) + create_list_of_tangents(source)
+
+
+def fields_around_ship(ship: Ship) -> List[tuple]:
+    """
+    Creates a list of fields around the given ship
+    :param ship: ship based on which the list will be generated
+    :type ship: Ship
+    :return: a list of field coordinates around that ship
+    """
+    all_fields = board.return_all_field_coordinates()
+    ship_fields = ship.get_segment_coordinates()
+    around = []
+    for ship_field in ship_fields:
+        fields_around_current = fields_around_field(ship_field)
+        for field in fields_around_current:
+            if field in all_fields and field not in around \
+                    and field not in ship_fields:
+                around.append(field)
+    return around
+
+
 def mark_misses_around(ship: Ship, placement_board: "board.Board"):
     """
     Marks fields around the Ship with FieldStatus.MISS to prevent ships from
-    generating directly next to each other. Fields that will be occupied by
-    the ship are also marked, as placing the ship will change their status to
-    the correct one.
+    generating directly next to each other.
     :param ship: Ship around which the fields will be marked
     :type ship: Ship
     :param placement_board: Board on which the fields will be marked
     :type placement_board: Board
     """
-    segments = ship.segments()
-    for segment in segments:
-        s_x, s_y = segment.position()
-        tl_x, tl_y = chr(ord(s_x) - 1), s_y - 1
-        x_range = [chr(i) for i in range(ord(tl_x), ord(tl_x) + 3)]
-        y_range = [i for i in range(tl_y, tl_y + 3)]
-        for x in x_range:
-            for y in y_range:
-                if field_on_board((x, y)):
-                    placement_board.set_field_status(x, y,
-                                                     board.FieldStatus.MISS)
+    fields_around = fields_around_ship(ship)
+    for x, y in fields_around:
+        placement_board.set_field_status(x, y, board.FieldStatus.MISS)
 
 
 class Fleet:
@@ -243,33 +249,6 @@ class Fleet:
         if ships is not None:
             self._ships = ships
         self._selected_ship = None
-
-    def fleet_to_str(self, draw_as_enemy: bool = False) -> str:
-        """
-        Returns a string containing all ships in the fleet and their current
-        states. For example:
-        █▒▒█ ███ ███ ▒
-
-        ██ ██ ██ ▒ █ █
-        represents a fleet with it's 4 segment ship with its middle segments
-        damaged, and the first and fourth small ships destroyed.
-        :param draw_as_enemy: if set to True, the ships will be drawn as a sunk
-        or undamaged, to not indicate which ship has been struck to the
-        enemy, False by default
-        :type draw_as_enemy: bool
-        :return: a string representing a fleet, similar to the example shown
-        above
-        """
-        fleet = ""
-        row1 = self._ships[:3]
-        row1.append(self._ships[-1])
-        row2 = self._ships[3:-1]
-        for ship in row1:
-            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
-        fleet += '\n'
-        for ship in row2:
-            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
-        return fleet
 
     def create_random(self):
         """
@@ -310,6 +289,8 @@ class Fleet:
         :return: True if the ship sinks completely, otherwise False
         """
         ship_hit = self.find_ship(x, y)
+        if ship_hit is None:
+            return False
         ship_hit.sink(x, y)
         if ship_hit.sunk():
             return True
@@ -343,6 +324,33 @@ class Fleet:
         if self._selected_ship is not None:
             return True
         return False
+
+    def _new_ship_test_fit(self, new_ship: Ship) -> int:
+        """
+        Checks if the fleet with a new ship instead of the selected one doesn't
+        collide with itself. This method is only used by set_ship_position
+        and change_ship_rotation methods
+        :param new_ship: a new ship that this fleet will be tested with
+        :type new_ship: Ship
+        :return: new_ship's index in the self._ships list if it fits with the
+        other ships, otherwise -1 to indicate that it can't be placed
+        """
+        new_fleet = deepcopy(self._ships)
+        old_ship_index = self._ships.index(self._selected_ship)
+        new_fleet[old_ship_index] = new_ship
+        # Now a test fit will be conducted to see if the fleet doesn't collide
+        # with itself, and if it doesn't, the selected_ship will be assigned
+        # with a reference to the new_ship, replacing it in selection and in
+        # the fleet
+        temp_board = board.Board()
+        for ship in new_fleet:
+            if field_available(ship, temp_board):
+                mark_misses_around(ship, temp_board)
+                temp_board.place_ship(ship)
+            else:
+                return -1
+        # If all ships have been placed it means that a new location is good
+        return old_ship_index
 
     def set_ship_position(self, x: str, y: int) -> bool:
         """
@@ -390,36 +398,6 @@ class Fleet:
         self._selected_ship = new_ship
         return True
 
-    def _new_ship_test_fit(self, new_ship: Ship) -> int:
-        """
-        Checks if the fleet with a new ship instead of the selected one doesn't
-        collide with itself. This method is only used by set_ship_position
-        and change_ship_rotation methods
-        :param new_ship: a new ship that this fleet will be tested with
-        :type new_ship: Ship
-        :return: new_ship's index in the self._ships list if it fits with the
-        other ships, otherwise -1 to indicate that it can't be placed
-        """
-        new_fleet = deepcopy(self._ships)
-        old_ship_index = self._ships.index(self._selected_ship)
-        new_fleet[old_ship_index] = new_ship
-        # Now a test fit will be conducted to see if the fleet doesn't collide
-        # with itself, and if it doesn't, the selected_ship will be assigned
-        # with a reference to the new_ship, replacing it in selection and in
-        # the fleet
-        temp_board = board.Board()
-        for ship in new_fleet:
-            if field_available(ship, temp_board):
-                mark_misses_around(ship, temp_board)
-                temp_board.place_ship(ship)
-            else:
-                return -1
-        # If all ships have been placed it means that a new location is good
-        return old_ship_index
-
-    def ships(self):
-        return self._ships
-
     def is_alive(self):
         """
         Checks if the whole fleet has sunk
@@ -429,6 +407,34 @@ class Fleet:
             if not ship.sunk():
                 return True
         return False
+
+    def fleet_to_str(self, draw_as_enemy: bool = False) -> str:
+        """
+        Returns a string containing all ships in the fleet and their current
+        states. For example:
+        █▒▒█ ███ ███ ▒
+        ██ ██ ██ ▒ █ █
+        represents a fleet with it's 4 segment ship with its middle segments
+        damaged, and the first and fourth small ships destroyed.
+        :param draw_as_enemy: if set to True, the ships will be drawn as a sunk
+        or undamaged, to not indicate which ship has been struck to the
+        enemy, False by default
+        :type draw_as_enemy: bool
+        :return: a string representing a fleet, similar to the example shown
+        above
+        """
+        fleet = ""
+        row1 = self._ships[:3]
+        row1.append(self._ships[-1])
+        row2 = self._ships[3:-1]
+        for ship in row1:
+            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
+        fleet = fleet[:-1]
+        fleet += '\n'
+        for ship in row2:
+            fleet += ship.ship_to_str(draw_as_enemy=draw_as_enemy) + ' '
+        fleet = fleet[:-1]
+        return fleet
 
     def get_display_fleet(self, display_as_enemy=False) -> "Fleet":
         """
@@ -453,6 +459,9 @@ class Fleet:
             return Fleet(display_ships)
         else:
             return Fleet(self._ships)
+
+    def ships(self):
+        return self._ships
 
     def selected_ship(self):
         return self._selected_ship

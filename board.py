@@ -48,7 +48,8 @@ class Field:
 class InvalidGameCoordinatesError(Exception):
     """
     Raised when provided game coordinates result in invalid
-    array coordinates after translation
+    array coordinates after translation, or if in any place during ship
+    position calculations an invalid ship gets created
     """
 
     def __init__(self, x: str, y: int):
@@ -94,6 +95,16 @@ def return_all_field_coordinates():
         for y in range(1, 11):
             all_fields.append((x, y))
     return all_fields
+
+
+def field_on_board(field: tuple[str, int]) -> bool:
+    """
+    Checks if given coordinates are a coordinates of a valid field on a board
+    :param field: tuple of a field's coordinates
+    :type field: tuple
+    :return: True if coordinates point to a field on the board, otherwise False
+    """
+    return field in return_all_field_coordinates()
 
 
 class Board:

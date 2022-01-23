@@ -1,6 +1,6 @@
-from board import GameBoard, Board
+from board import GameBoard, Board, field_on_board
 from enemy import Enemy
-from fleet import Fleet, field_on_board
+from fleet import Fleet
 from settings import Setting, Settings
 
 
