@@ -3,12 +3,13 @@ import os
 import sys
 from enum import Enum
 from functools import partial
+from typing import List
 
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QApplication, QMainWindow
 
 from board import FieldStatus
-from fleet_creator import FleetCreator
+from fleet_creator import FleetCreator, FCMessage
 from game import Game
 from gui import UIBoard, load_icons, UIFleet
 from settings import Settings, Setting
@@ -52,6 +53,39 @@ def cls():
         os.system("cls")
     else:
         os.system("clear")
+
+
+def format_fleet_creator_messages(messages: List[FCMessage]) -> str:
+    """
+    Formats the messages from FleetCreator, creating a string with all of them
+    :param messages: messages from FleetCreator
+    :type messages: list
+    :return: string with all messages formatted
+    """
+
+    help_content = "Help:\n" \
+                   "sel <x> <y>: Selects a ship in the given location\n" \
+                   "mv <x> <y>: Moves the selected ship to the given " \
+                   "location. The location points to the ship's " \
+                   "uppermost or left segment\n" \
+                   "rot: Rotates the selected ship from vertical to " \
+                   "horizontal rotation, or the other way, around it's " \
+                   "uppermost or left part\n" \
+                   "rand: Places all ships randomly\n" \
+                   "done: Ends the setup process and accepts the " \
+                   "current board as the board for the game\n" \
+                   "quit: exits to main menu"
+
+    messages_dict = {
+        FCMessage.SHIP_SELECTED: "A ship has been selected",
+        FCMessage.SHIP_MOVE_FAIL: "The selected location is invalid",
+        FCMessage.SHIP_ROTATION_FAIL: "You can't rotate this ship",
+        FCMessage.SETUP_HELP: help_content
+    }
+
+    messages_list = [messages_dict[x] for x in messages]
+    formatted_messages = '\n'.join(messages_list)
+    return formatted_messages
 
 
 class BattleshipCMD:
@@ -105,7 +139,8 @@ class BattleshipCMD:
         display_board = self._fleet_creator.get_board_display()
         print("Set up your fleet:")
         print(display_board)
-        print(self._fleet_creator.get_display_messages())
+        messages = self._fleet_creator.get_display_messages()
+        print(format_fleet_creator_messages(messages))
 
     def _display_game(self):
         """
