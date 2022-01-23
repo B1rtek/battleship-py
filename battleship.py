@@ -10,7 +10,7 @@ from PySide2.QtWidgets import QApplication, QMainWindow
 
 from board import FieldStatus
 from fleet_creator import FleetCreator, FCMessage
-from game import Game
+from game import Game, GameMessage
 from gui import UIBoard, load_icons, UIFleet
 from settings import Settings, Setting
 from ui_battleship import Ui_Battleship
@@ -62,7 +62,6 @@ def format_fleet_creator_messages(messages: List[FCMessage]) -> str:
     :type messages: list
     :return: string with all messages formatted
     """
-
     help_content = "Help:\n" \
                    "sel <x> <y>: Selects a ship in the given location\n" \
                    "mv <x> <y>: Moves the selected ship to the given " \
@@ -85,6 +84,50 @@ def format_fleet_creator_messages(messages: List[FCMessage]) -> str:
 
     messages_list = [messages_dict[x] for x in messages]
     formatted_messages = '\n'.join(messages_list)
+    return formatted_messages
+
+
+def format_game_messages(messages: List[GameMessage],
+                         extra_newline: bool = False) -> str:
+    """
+    Formats the messages from Game, creating a string with all of them
+    :param messages: messages from Game
+    :type messages: list
+    :return: string with all messages formatted
+    """
+    help_content = "Help:\n" \
+                   "st <x> <y>: shoots at the specified field\n" \
+                   "mk <x> <y>: marks the specified field on the " \
+                   "enemy's board as empty\n" \
+                   "unmk <x> <y>: unmarks the specified field\n" \
+                   "quit: quits the game"
+
+    messages_dict = {
+        GameMessage.NOT_PLAYERS_TURN: "It's not your turn!",
+        GameMessage.INVALID_COORDS: "Invalid field coordinates",
+        GameMessage.ENEMY_SHIP_HIT: "You've hit an enemy ship!",
+        GameMessage.ENEMY_SHIP_SUNK: "You've destroyed an enemy ship!",
+        GameMessage.ENEMY_MISS: "Enemy has missed. It's your turn now.",
+        GameMessage.ENEMY_WIN: "Enemy wins.",
+        GameMessage.FIELD_MARK_FAIL: "The field you tried to mark has a "
+                                     "discovered ship",
+        GameMessage.FIELD_UNMARK_FAIL: "The field you tried to unmark isn't "
+                                       "marked",
+        GameMessage.GAME_HELP: help_content,
+        GameMessage.PLAYER_SHIP_HIT: "Enemy has hit one of your ships!",
+        GameMessage.PLAYER_SHIP_SUNK: "Enemy has destroyed one of your ships!",
+        GameMessage.PLAYER_MISS: "You missed. Press to continue to the next "
+                                 "enemy move",
+        GameMessage.PLAYER_WIN: "You win!",
+        GameMessage.FIELD_ALREADY_DISCOVERED: "This field has been already "
+                                              "discovered",
+        GameMessage.PLAYERS_TURN: "It's your turn."
+    }
+
+    messages_list = [messages_dict[x] for x in messages]
+    formatted_messages = '\n'.join(messages_list)
+    if extra_newline:
+        formatted_messages += '\n'
     return formatted_messages
 
 
@@ -161,7 +204,7 @@ class BattleshipCMD:
         print(splitter)
         print(player_board_str)
         print(player_fleet_str)
-        print(messages)
+        print(format_game_messages(messages))
 
     def _display_help(self):
         """
@@ -702,7 +745,8 @@ class BattleshipWindow(QMainWindow):
         self._game_player_fleet.update_fleet_display(player_fleet)
         self._game_enemy_fleet.update_fleet_display(enemy_fleet)
         messages = self._game.get_display_messages()
-        self.ui.game_plain_text_edit_log.insertPlainText(messages)
+        formatted = format_game_messages(messages, extra_newline=True)
+        self.ui.game_plain_text_edit_log.insertPlainText(formatted)
         scrollbar = self.ui.game_plain_text_edit_log.verticalScrollBar()
         scrollbar.setValue(scrollbar.maximum() - 2)
 
