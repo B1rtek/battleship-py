@@ -48,8 +48,7 @@ class Field:
 class InvalidGameCoordinatesError(Exception):
     """
     Raised when provided game coordinates result in invalid
-    array coordinates after translation, or if in any place during ship
-    position calculations an invalid ship gets created
+    array coordinates after translation
     """
 
     def __init__(self, x: str, y: int):
@@ -295,12 +294,11 @@ class GameBoard:
             return self._visible_board
         else:
             display_board = Board()
-            for x in "abcdefghij":
-                for y in range(1, 11):
-                    status = self._data_board.get_field_status(x, y)
-                    if status == FieldStatus.NOTHING:
-                        status = self._visible_board.get_field_status(x, y)
-                    display_board.set_field_status(x, y, status)
+            for x, y in return_all_field_coordinates():
+                status = self._data_board.get_field_status(x, y)
+                if status == FieldStatus.NOTHING:
+                    status = self._visible_board.get_field_status(x, y)
+                display_board.set_field_status(x, y, status)
             return display_board
 
     def field_undiscovered(self, x, y) -> bool:

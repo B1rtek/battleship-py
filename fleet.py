@@ -267,12 +267,10 @@ class Fleet:
         temp_board = board.Board()
         for rotation, size in zip(rotations, sizes):
             good_coords = []
-            for x in valid_x_coords:
-                for c_y in range(10):
-                    y = c_y + 1
-                    temp_ship = Ship((x, y), size, rotation)
-                    if field_available(temp_ship, temp_board):
-                        good_coords.append((x, y))
+            for x, y in board.return_all_field_coordinates():
+                temp_ship = Ship((x, y), size, rotation)
+                if field_available(temp_ship, temp_board):
+                    good_coords.append((x, y))
             position = choice(good_coords)
             ship_to_add = Ship(position, size, rotation)
             self._ships.append(ship_to_add)

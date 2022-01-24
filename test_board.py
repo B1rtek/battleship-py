@@ -77,27 +77,26 @@ def test_game_to_array_coords_y_too_high():
 
 def test_get_all_fields_coordinates():
     all_fields = return_all_field_coordinates()
-    assert all_fields == [('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1),
-                          ('f', 1), ('g', 1), ('h', 1), ('i', 1), ('j', 1),
-                          ('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2),
-                          ('f', 2), ('g', 2), ('h', 2), ('i', 2), ('j', 2),
-                          ('a', 3), ('b', 3), ('c', 3), ('d', 3), ('e', 3),
-                          ('f', 3), ('g', 3), ('h', 3), ('i', 3), ('j', 3),
-                          ('a', 4), ('b', 4), ('c', 4), ('d', 4), ('e', 4),
-                          ('f', 4), ('g', 4), ('h', 4), ('i', 4), ('j', 4),
-                          ('a', 5), ('b', 5), ('c', 5), ('d', 5), ('e', 5),
-                          ('f', 5), ('g', 5), ('h', 5), ('i', 5), ('j', 5),
-                          ('a', 6), ('b', 6), ('c', 6), ('d', 6), ('e', 6),
-                          ('f', 6), ('g', 6), ('h', 6), ('i', 6), ('j', 6),
-                          ('a', 7), ('b', 7), ('c', 7), ('d', 7), ('e', 7),
-                          ('f', 7), ('g', 7), ('h', 7), ('i', 7), ('j', 7),
-                          ('a', 8), ('b', 8), ('c', 8), ('d', 8), ('e', 8),
-                          ('f', 8), ('g', 8), ('h', 8), ('i', 8), ('j', 8),
-                          ('a', 9), ('b', 9), ('c', 9), ('d', 9), ('e', 9),
-                          ('f', 9), ('g', 9), ('h', 9), ('i', 9), ('j', 9),
-                          ('a', 10), ('b', 10), ('c', 10), ('d', 10),
-                          ('e', 10), ('f', 10), ('g', 10), ('h', 10),
-                          ('i', 10), ('j', 10)]
+    assert all_fields == [('a', 1), ('a', 2), ('a', 3), ('a', 4), ('a', 5),
+                          ('a', 6), ('a', 7), ('a', 8), ('a', 9), ('a', 10),
+                          ('b', 1), ('b', 2), ('b', 3), ('b', 4), ('b', 5),
+                          ('b', 6), ('b', 7), ('b', 8), ('b', 9), ('b', 10),
+                          ('c', 1), ('c', 2), ('c', 3), ('c', 4), ('c', 5),
+                          ('c', 6), ('c', 7), ('c', 8), ('c', 9), ('c', 10),
+                          ('d', 1), ('d', 2), ('d', 3), ('d', 4), ('d', 5),
+                          ('d', 6), ('d', 7), ('d', 8), ('d', 9), ('d', 10),
+                          ('e', 1), ('e', 2), ('e', 3), ('e', 4), ('e', 5),
+                          ('e', 6), ('e', 7), ('e', 8), ('e', 9), ('e', 10),
+                          ('f', 1), ('f', 2), ('f', 3), ('f', 4), ('f', 5),
+                          ('f', 6), ('f', 7), ('f', 8), ('f', 9), ('f', 10),
+                          ('g', 1), ('g', 2), ('g', 3), ('g', 4), ('g', 5),
+                          ('g', 6), ('g', 7), ('g', 8), ('g', 9), ('g', 10),
+                          ('h', 1), ('h', 2), ('h', 3), ('h', 4), ('h', 5),
+                          ('h', 6), ('h', 7), ('h', 8), ('h', 9), ('h', 10),
+                          ('i', 1), ('i', 2), ('i', 3), ('i', 4), ('i', 5),
+                          ('i', 6), ('i', 7), ('i', 8), ('i', 9), ('i', 10),
+                          ('j', 1), ('j', 2), ('j', 3), ('j', 4), ('j', 5),
+                          ('j', 6), ('j', 7), ('j', 8), ('j', 9), ('j', 10)]
 
 
 def test_board_create():
@@ -386,7 +385,6 @@ def test_gameboard_sink_ship():
         assert board_seen_by_enemy. \
                    get_field_status(x, y) == FieldStatus.SUNK
 
-
 def test_gameboard_field_undiscovered():
     board = Board()
     fleet = Fleet()
@@ -438,25 +436,25 @@ def test_mark_misses_around(monkeypatch):
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in segments:
         assert board_seen_by_player. \
-            get_field_status(x, y) == FieldStatus.SUNK
+                   get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-            get_field_status(x, y) == FieldStatus.SUNK
+                   get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-            get_field_status(x, y) == FieldStatus.NOTHING
+                   get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-            get_field_status(x, y) == FieldStatus.NOTHING
+                   get_field_status(x, y) == FieldStatus.NOTHING
     gboard.mark_misses_around(ship_to_sink)
     for x, y in segments:
         assert board_seen_by_player. \
-            get_field_status(x, y) == FieldStatus.SUNK
+                   get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-            get_field_status(x, y) == FieldStatus.SUNK
+                   get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-            get_field_status(x, y) == FieldStatus.NOTHING
+                   get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-            get_field_status(x, y) == FieldStatus.MISS
+                   get_field_status(x, y) == FieldStatus.MISS
     # This function is used to automatically mark fields around when the ship
     # sinks, and these markers cannot be seen by the player as they aren't
     # placed by the enemy, but show up on their board automatically

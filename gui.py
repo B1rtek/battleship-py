@@ -3,7 +3,8 @@ from PySide2.QtGui import QPixmap, QIcon
 from PySide2.QtWidgets import QToolButton, QSizePolicy, \
     QGridLayout
 
-from board import FieldStatus, game_to_array_coords, Board
+from board import FieldStatus, game_to_array_coords, Board, \
+    return_all_field_coordinates
 from fleet import Fleet, Ship
 
 
@@ -17,7 +18,7 @@ def load_icons():
     }
 
 
-def translate_coords(x: int, y: int) -> tuple[str, int]:
+def array_to_game_coords(x: int, y: int) -> tuple[str, int]:
     """
     Translates coordinates from array indices to game field coordinates
     :param x: x index of a field
@@ -125,7 +126,7 @@ class UIBoard:
             row = []
             for x in range(10):
                 button = BoardButton()
-                c_x, c_y = translate_coords(x, y)
+                c_x, c_y = array_to_game_coords(x, y)
                 button.set_game_coordinates(c_x, c_y)
                 row.append(button)
             self._button_array.append(row)
@@ -139,9 +140,8 @@ class UIBoard:
         refreshes a button if there was a change of state of it's corresponding
         field to improve performance
         """
-        for c_x in "abcdefghij":
-            for c_y in range(1, 11):
-                self._cached_board.set_field_status(c_x, c_y, FieldStatus.SUNK)
+        for x, y in return_all_field_coordinates():
+            self._cached_board.set_field_status(x, y, FieldStatus.SUNK)
 
     def set_icons(self, icons_dict: dict):
         """
@@ -162,13 +162,12 @@ class UIBoard:
         way on the board, only used in the FleetCreator
         :type selected_ship: Ship
         """
-        for c_y in range(1, 11):
-            for c_x in "abcdefghij":
-                new_status = display_board.get_field_status(c_x, c_y)
-                if self._cached_board.get_field_status(c_x, c_y) != new_status:
-                    x, y = game_to_array_coords(c_x, c_y)
-                    self._button_array[y][x].setIcon(self._icons[new_status])
-                    self._cached_board.set_field_status(c_x, c_y, new_status)
+        for c_x, c_y in return_all_field_coordinates():
+            new_status = display_board.get_field_status(c_x, c_y)
+            if self._cached_board.get_field_status(c_x, c_y) != new_status:
+                x, y = game_to_array_coords(c_x, c_y)
+                self._button_array[y][x].setIcon(self._icons[new_status])
+                self._cached_board.set_field_status(c_x, c_y, new_status)
         if selected_ship is not None:
             selected = selected_ship.get_segment_coordinates()
             for c_x, c_y in selected:

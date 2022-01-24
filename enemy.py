@@ -1,6 +1,8 @@
 from copy import deepcopy
 from random import choice, shuffle
 
+import board
+
 
 def create_list_of_adherent(source: tuple[str, int]) -> list:
     """
@@ -64,9 +66,8 @@ class Enemy:
         self._undiscovered = []
         self._to_shoot = []
         self._to_mark_as_empty = []
-        for x in "abcdefghij":
-            for y in range(1, 11):
-                self._undiscovered.append((x, y))
+        for x, y in board.return_all_field_coordinates():
+            self._undiscovered.append((x, y))
         self._last_target = None
         self._hard_mode = hard_mode
 
