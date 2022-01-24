@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>770</width>
-    <height>500</height>
+    <height>559</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -881,10 +881,10 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>The goal of the game is to destroy your enemy's fleet.
-But first, in order to fight them, you need your own fleet - which you prepare on the setup page.
-In there, you can see your fleet, and three buttons which you can use to move the ships around. First, you select a ship by clicking on it. To move it to a new location, click any other empty field, and if there is enough space for that ship there, it will be moved. The field on which you click will contain the left upmost segment of the ship you moved. To rotate the selected ship, press the &quot;Rotate&quot; button. To generate a new random fleet, press the &quot;Generate random&quot; button. When you're done setting up your fleet, press &quot;Done&quot; to start the game.
-The game screen consists of two boards and two sets of fleet displays, and a message log, where you can see what has been happening in the last few moves. To shoot at a certain field, click on it with the left mouse button, to mark or unmark that field, click on it with the right mouse button. The enemy will move every one second when it's their turn. The player who first destroys the rival's fleet wins. Good luck!</string>
+               <string>The goal of the game is to destroy the enemy fleet.
+But first, to fight them you need your own fleet - which you set up on the setup page.
+There you can see your fleet and the three buttons you can use to move your ships. First you select a ship by clicking on it. To move it to a new location, click on any other empty space, and if there is enough space for that ship, it will be moved. The square you click on will contain the leftmost highest ship segment you have moved. To rotate the selected ship, press the &quot;Rotate&quot; button. To generate a new random fleet, press the &quot;Generate random&quot; button. When you are finished setting up your fleet, hit &quot;Done&quot; to start the game.
+The game screen consists of two boards and two sets of fleet displays and a message log where you can see what has happened in the last few moves. To shoot a specific field, left-click on it, to mark or unmark that field, right-click on it. The enemy will move when you press the left mouse button during their turn. The first player to destroy an opponent's fleet wins. Good luck!</string>
               </property>
               <property name="wordWrap">
                <bool>true</bool>

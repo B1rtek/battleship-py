@@ -17,7 +17,7 @@ class Ui_Battleship(object):
     def setupUi(self, Battleship):
         if not Battleship.objectName():
             Battleship.setObjectName(u"Battleship")
-        Battleship.resize(770, 500)
+        Battleship.resize(770, 559)
         sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -601,11 +601,11 @@ class Ui_Battleship(object):
         self.label_player_board.setText(QCoreApplication.translate("Battleship", u"Your board", None))
         self.label_enemy_board.setText(QCoreApplication.translate("Battleship", u"Enemy's board", None))
         self.label_htp_title.setText(QCoreApplication.translate("Battleship", u"How to play", None))
-        self.label_htp_help.setText(QCoreApplication.translate("Battleship", u"The goal of the game is to destroy your enemy's fleet.\n"
-"But first, in order to fight them, you need your own fleet - which you prepare on the setup page.\n"
-"In there, you can see your fleet, and three buttons which you can use to move the ships around. First, you select a ship by clicking on it. To move it to a new location, click any other empty field, and if there is enough space for that ship there, it will be moved. The field on which you click will contain the left upmost segment of the ship you moved. To rotate the selected ship, press the \"Rotate\" button. To generate a new random fleet, press the \"Generate random\" button. When you're done setting up your fleet, press \"Done\" to start the game.\n"
-"The game screen consists of two boards and two sets of fleet displays, and a message log, where you can see what has been happening in the last few moves. To shoot at a certain field, click on it with the left mouse button, to mark or unmark that field, click on it with the right mouse button. The ene"
-                        "my will move every one second when it's their turn. The player who first destroys the rival's fleet wins. Good luck!", None))
+        self.label_htp_help.setText(QCoreApplication.translate("Battleship", u"The goal of the game is to destroy the enemy fleet.\n"
+"But first, to fight them you need your own fleet - which you set up on the setup page.\n"
+"There you can see your fleet and the three buttons you can use to move your ships. First you select a ship by clicking on it. To move it to a new location, click on any other empty space, and if there is enough space for that ship, it will be moved. The square you click on will contain the leftmost highest ship segment you have moved. To rotate the selected ship, press the \"Rotate\" button. To generate a new random fleet, press the \"Generate random\" button. When you are finished setting up your fleet, hit \"Done\" to start the game.\n"
+"The game screen consists of two boards and two sets of fleet displays and a message log where you can see what has happened in the last few moves. To shoot a specific field, left-click on it, to mark or unmark that field, right-click on it. The enemy will move when you press the left mouse button during their turn. The first playe"
+                        "r to destroy an opponent's fleet wins. Good luck!", None))
         self.button_htp_back.setText(QCoreApplication.translate("Battleship", u"Back", None))
         self.label_settings.setText(QCoreApplication.translate("Battleship", u"Settings", None))
         self.checkbox_settings_mma.setText(QCoreApplication.translate("Battleship", u"Automatically mark misses around sunken ships", None))
