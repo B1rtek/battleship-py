@@ -77,19 +77,11 @@ def game_to_array_coords(x: str, y: int) -> tuple[int, int]:
     return coord_x, coord_y
 
 
-def get_all_fields_coordinates():
+def return_all_field_coordinates():
     """
     Returns a list of tuples containing coordinates of all fields on the board
     :return: a list of 100 tuples with field coordinates
     """
-    all_fields = []
-    for y in range(1, 11):
-        for x in "abcdefghij":
-            all_fields.append((x, y))
-    return all_fields
-
-
-def return_all_field_coordinates():
     all_fields = []
     for x in "abcdefghij":
         for y in range(1, 11):

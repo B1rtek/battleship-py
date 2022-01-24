@@ -1,7 +1,8 @@
 import pytest
 
 from board import Field, FieldStatus, game_to_array_coords, \
-    InvalidGameCoordinatesError, Board, get_all_fields_coordinates, GameBoard
+    InvalidGameCoordinatesError, Board, GameBoard, \
+    return_all_field_coordinates
 from fleet import Ship, Fleet
 
 
@@ -75,7 +76,7 @@ def test_game_to_array_coords_y_too_high():
 
 
 def test_get_all_fields_coordinates():
-    all_fields = get_all_fields_coordinates()
+    all_fields = return_all_field_coordinates()
     assert all_fields == [('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1),
                           ('f', 1), ('g', 1), ('h', 1), ('i', 1), ('j', 1),
                           ('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2),
@@ -162,10 +163,10 @@ def test_board_place_fleet():
         segments = ship.segments()
         for segment in segments:
             ship_segment_poss.append(segment.position())
-    for x, y in get_all_fields_coordinates():
+    for x, y in return_all_field_coordinates():
         assert board.get_field_status(x, y) == FieldStatus.NOTHING
     board.place_fleet(fleet)
-    for x, y in get_all_fields_coordinates():
+    for x, y in return_all_field_coordinates():
         if (x, y) in ship_segment_poss:
             assert board.get_field_status(x, y) == FieldStatus.SHIP
         else:
@@ -196,11 +197,11 @@ def test_gameboard_create():
     board.place_fleet(fleet)
     gboard = GameBoard(board)
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
-    for x, y in get_all_fields_coordinates():
+    for x, y in return_all_field_coordinates():
         assert board_seen_by_enemy. \
                    get_field_status(x, y) == FieldStatus.NOTHING
     board_seen_by_player = gboard.get_display_board()
-    for x, y in get_all_fields_coordinates():
+    for x, y in return_all_field_coordinates():
         if (x, y) in ship_segment_poss:
             assert board_seen_by_player. \
                        get_field_status(x, y) == FieldStatus.SHIP
