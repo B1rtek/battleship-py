@@ -608,7 +608,7 @@ def test_fleet_change_ship_rotation_fail_collision(monkeypatch):
     assert not fleet.selected_ship().vertical()
 
 
-def test_fleet_change_ship_rotation_fail_collision(monkeypatch):
+def test_fleet_change_ship_rotation_fail_out_of_board(monkeypatch):
     def rigged_fleet(self):
         self._ships.clear()
         ships = []
@@ -818,5 +818,3 @@ def test_fleet_get_display_fleet_sunk_as_enemy():
             assert segment.sunk() == display_segment.sunk()
             assert segment.position() == display_segment.position()
             assert segment.sunk()
-
-

@@ -80,7 +80,7 @@ def test_game_discover_field_miss():
     x, y = random.choice(misses)
     assert not game.discover_field(x, y)
     assert game._enemy_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.MISS
+        get_field_status(x, y) == FieldStatus.MISS
     messages = game.get_display_messages()
     assert len(messages) == 1
     assert GameMessage.PLAYER_MISS in messages
@@ -97,7 +97,7 @@ def test_game_discover_field_hit():
     x, y = game._enemy_fleet.ships()[0].get_segment_coordinates()[0]
     assert game.discover_field(x, y)
     assert game._enemy_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.SHIP
+        get_field_status(x, y) == FieldStatus.SHIP
     messages = game.get_display_messages()
     assert len(messages) == 1
     assert GameMessage.ENEMY_SHIP_HIT in messages
@@ -117,7 +117,7 @@ def test_game_discover_field_sink():
     x, y = game._enemy_fleet.ships()[9].get_segment_coordinates()[0]
     assert game.discover_field(x, y)
     assert game._enemy_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.SUNK
+        get_field_status(x, y) == FieldStatus.SUNK
     fields_around = fields_around_ship(game._enemy_fleet.ships()[9])
     for x, y in fields_around:
         assert game._enemy_board._visible_board. \
@@ -139,7 +139,7 @@ def test_game_discover_field_sink_mark_misses():
     x, y = game._enemy_fleet.ships()[9].get_segment_coordinates()[0]
     assert game.discover_field(x, y)
     assert game._enemy_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.SUNK
+        get_field_status(x, y) == FieldStatus.SUNK
     fields_around = fields_around_ship(game._enemy_fleet.ships()[9])
     for x, y in fields_around:
         assert game._enemy_board._visible_board. \
@@ -231,7 +231,7 @@ def test_game_mark_field():
     game.get_display_messages()
     game.mark_field('a', 1)
     assert game._enemy_board._visible_board. \
-               get_field_status('a', 1) == FieldStatus.MISS
+        get_field_status('a', 1) == FieldStatus.MISS
     messages = game.get_display_messages()
     assert not messages
 
@@ -273,11 +273,11 @@ def test_game_unmark_field():
     game.get_display_messages()
     game.mark_field('a', 1)
     assert game._enemy_board._visible_board. \
-               get_field_status('a', 1) == FieldStatus.MISS
+        get_field_status('a', 1) == FieldStatus.MISS
     game.get_display_messages()
     game.unmark_field('a', 1)
     assert game._enemy_board._visible_board. \
-               get_field_status('a', 1) == FieldStatus.NOTHING
+        get_field_status('a', 1) == FieldStatus.NOTHING
     messages = game.get_display_messages()
     assert not messages
 
@@ -358,7 +358,7 @@ def test_game_enemy_move_miss(monkeypatch):
     assert not game.enemy_move()
     x, y = misses_for_enemy[0]
     assert game._player_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.MISS
+        get_field_status(x, y) == FieldStatus.MISS
     messages = game.get_display_messages()
     assert len(messages) == 1
     assert GameMessage.ENEMY_MISS in messages
@@ -389,14 +389,14 @@ def test_game_enemy_move_hit(monkeypatch):
     x, y = guaranteed_hit
     assert game.enemy_move()
     assert game._player_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.SHIP
+        get_field_status(x, y) == FieldStatus.SHIP
     assert game._player_board._data_board. \
-               get_field_status(x, y) == FieldStatus.SUNK
+        get_field_status(x, y) == FieldStatus.SUNK
     tangents = create_list_of_tangents(guaranteed_hit)
     for a, b in tangents:
         if field_on_board((a, b)):
             assert game._player_board._visible_board. \
-                       get_field_status(a, b) == FieldStatus.MISS
+                get_field_status(a, b) == FieldStatus.MISS
     messages = game.get_display_messages()
     assert len(messages) == 1
     assert GameMessage.PLAYER_SHIP_HIT in messages
@@ -427,9 +427,9 @@ def test_game_enemy_move_sink(monkeypatch):
     x, y = guaranteed_sink
     assert game.enemy_move()
     assert game._player_board._visible_board. \
-               get_field_status(x, y) == FieldStatus.SUNK
+        get_field_status(x, y) == FieldStatus.SUNK
     assert game._player_board._data_board. \
-               get_field_status(x, y) == FieldStatus.SUNK
+        get_field_status(x, y) == FieldStatus.SUNK
     around = fields_around_ship(fleet.ships()[9])
     for a, b in around:
         assert game._player_board._visible_board. \
@@ -782,4 +782,3 @@ def test_game_get_enemy_fleet_display():
                 assert segment.sunk()
             else:
                 assert not segment.sunk()
-

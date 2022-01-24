@@ -6,7 +6,7 @@ from fleet_creator import FleetCreator, FCMessage
 
 
 def test_fleet_creator_create():
-    creator = FleetCreator()
+    FleetCreator()
 
 
 def test_fleet_creator_start():
