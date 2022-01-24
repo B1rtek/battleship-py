@@ -2,7 +2,6 @@ import argparse
 import os
 import sys
 from enum import Enum
-from functools import partial
 from typing import List
 
 from PySide2.QtCore import Qt
@@ -143,6 +142,7 @@ class BattleshipCMD:
         self._fleet_creator = FleetCreator()
         self._game = Game()
         self._settings = Settings()
+        self._settings.load_settings()
         self._state = AppState.MAIN_MENU
         self._quit = False
         self._prompt = "> "
@@ -464,6 +464,7 @@ class BattleshipCMD:
             self._display()
             command, x, y = self._player_input()
             self._execute(command, x, y)
+        self._settings.save_settings()
 
 
 class BattleshipWindow(QMainWindow):
@@ -488,6 +489,7 @@ class BattleshipWindow(QMainWindow):
         self._game_player_fleet = UIFleet()
         self._game_enemy_fleet = UIFleet()
         self._settings = Settings()
+        self._settings.load_settings()
         self._setup_boards()
         self._setup_fleet_displays()
         self._link_buttons()
@@ -563,7 +565,7 @@ class BattleshipWindow(QMainWindow):
         self.ui.button_main_play.clicked.connect(self._fleet_creator_start)
         self.ui.button_main_htp.clicked.connect(self._htp_show)
         self.ui.button_main_settings.clicked.connect(self._settings_show)
-        self.ui.button_main_quit.clicked.connect(partial(sys.exit, 0))
+        self.ui.button_main_quit.clicked.connect(self._quit)
         self.ui.button_setup_exit.clicked.connect(self._return_to_main)
         self.ui.button_setup_rand.clicked.connect(self._fleet_creator_rand)
         self.ui.button_setup_rot.clicked.connect(self._fleet_creator_rot)
@@ -764,6 +766,10 @@ class BattleshipWindow(QMainWindow):
     def _settings_save_and_back(self):
         self._game.apply_settings(self._settings.get_settings())
         self._return_to_main()
+
+    def _quit(self):
+        self._settings.save_settings()
+        sys.exit(0)
 
 
 def main(argv):
