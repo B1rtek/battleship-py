@@ -160,9 +160,6 @@ class Board:
         :type fleet_to_place: Fleet
         """
         self.clear_board()
-        for row in self._fields:
-            for field in row:
-                field.set_status(FieldStatus.NOTHING)
         ships = fleet_to_place.ships()
         for ship in ships:
             self.place_ship(ship)
@@ -306,7 +303,7 @@ class GameBoard:
                 display_board.set_field_status(x, y, status)
             return display_board
 
-    def field_undiscovered(self, x, y) -> bool:
+    def field_undiscovered(self, x: str, y: int) -> bool:
         """
         Checks if a field on the specified coordinates is undiscovered
         :param x: x coordinate of the field
