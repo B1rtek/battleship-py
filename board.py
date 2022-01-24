@@ -119,13 +119,18 @@ class Board:
         """
         Prints out the contents of this board
         """
-        board_str = "   abcdefghij\n\n"
+        board_str = "   abcdefghij\n" \
+                    "  +=-=-=-=-=-+\n"
         for number, row in enumerate(self._fields):
-            current = f"{(number + 1):>2} "
+            current = f"{(number + 1):>2}"
+            border = '|' if number % 2 == 0 else chr(186)
+            current += border
             for field in row:
                 current += str(field)
+            current += border
             current += '\n'
             board_str += current
+        board_str += "  +=-=-=-=-=-+"
         return board_str
 
     def clear_board(self):
