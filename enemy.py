@@ -10,7 +10,7 @@ def create_list_of_adherent(source: tuple[str, int]) -> list:
     adherent to a field with coordinates provided in the source tuple
     :param source: tuple containing coordinates of a field
     :type source: tuple
-    :return: list of tuples containing coordinates of fields the would be
+    :return: list of tuples containing coordinates of fields that would be
     adherent to the given one
     """
     return [left_field(source), right_field(source), upper_field(source),
@@ -100,28 +100,28 @@ class Enemy:
         rank_list = []
         for field in self._undiscovered:
             score_vert = 1
-            score_horz = 1
-            workfield = deepcopy(field)
-            workfield = upper_field(workfield)
-            while workfield in self._undiscovered:
+            score_horiz = 1
+            current = deepcopy(field)
+            current = upper_field(current)
+            while current in self._undiscovered:
                 score_vert = score_vert + 1
-                workfield = upper_field(workfield)
-            workfield = deepcopy(field)
-            workfield = lower_field(workfield)
-            while workfield in self._undiscovered:
+                current = upper_field(current)
+            current = deepcopy(field)
+            current = lower_field(current)
+            while current in self._undiscovered:
                 score_vert = score_vert + 1
-                workfield = lower_field(workfield)
-            workfield = deepcopy(field)
-            workfield = right_field(workfield)
-            while workfield in self._undiscovered:
-                score_horz = score_horz + 1
-                workfield = right_field(workfield)
-            workfield = deepcopy(field)
-            workfield = left_field(workfield)
-            while workfield in self._undiscovered:
-                score_horz = score_horz + 1
-                workfield = left_field(workfield)
-            rank_list.append((max(score_vert, score_horz), field))
+                current = lower_field(current)
+            current = deepcopy(field)
+            current = right_field(current)
+            while current in self._undiscovered:
+                score_horiz = score_horiz + 1
+                current = right_field(current)
+            current = deepcopy(field)
+            current = left_field(current)
+            while current in self._undiscovered:
+                score_horiz = score_horiz + 1
+                current = left_field(current)
+            rank_list.append((max(score_vert, score_horiz), field))
         # awkward sorting because sorted() doesn't want to work
         best_fields = []
         max_score = max(x[0] for x in rank_list)

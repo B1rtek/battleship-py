@@ -87,7 +87,7 @@ class Game:
         :type y: int
         :return: True if the player hit enemy's ship, otherwise false. True is
         also returned when the move failed because of discovering fields on
-        coordinates outside of the board or fields already discovered, to
+        coordinates outside the board or fields already discovered, to
         prevent the player from losing their turn
         """
         if not self._players_turn:

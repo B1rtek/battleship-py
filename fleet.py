@@ -31,13 +31,13 @@ class ShipSegment:
 
     def sink(self):
         """
-        Sinks this segment by setting it's _sunk value to True
+        Sinks this segment by setting its _sunk value to True
         """
         self._sunk = True
 
     def unsink(self):
         """
-        "Unsinks" this segment by setting it's _sunk value to False, used to
+        "Unsinks" this segment by setting its _sunk value to False, used to
         initialize the Fleet displays in the UI version, since they only
         refresh when there is a change in the state of the fleet, so to begin
         the game all ships must be sunk for the displays to update
@@ -132,7 +132,7 @@ class Ship:
         """
         Prints out a representation of the ship's condition in a graphical form
         For example, "████" represents a ship of size 4 without any damage,
-        "█▒▒" represents a ship of size 3 with two of its segments destroyed.
+        "█▒▒" represents a ship of size 3 with two of its segments destroyed
         :param draw_as_enemy: if set to True, the ship will be drawn as a sunk
         one or undamaged one, to not indicate which part has been struck to the
         enemy, False by default
@@ -217,7 +217,7 @@ def fields_around_ship(ship: Ship) -> List[tuple]:
 def mark_misses_around(ship: Ship, placement_board: "board.Board"):
     """
     Marks fields around the Ship with FieldStatus.MISS to prevent ships from
-    generating directly next to each other.
+    generating directly next to each other
     :param ship: Ship around which the fields will be marked
     :type ship: Ship
     :param placement_board: Board on which the fields will be marked
@@ -353,7 +353,7 @@ class Fleet:
         Sets selected ship's position to the specified coordinates. Coordinates
         point to the ship's new origin. Before moving the ship, a test is
         conducted to see if the new position is valid and doesn't collide with
-        any ships from this fleet.
+        any ships from this fleet
         :param x: x coordinate of the new position
         :type x: str
         :param y: y coordinate of the new position
@@ -411,7 +411,7 @@ class Fleet:
         █▒▒█ ███ ███ ▒
         ██ ██ ██ ▒ █ █
         represents a fleet with it's 4 segment ship with its middle segments
-        damaged, and the first and fourth small ships destroyed.
+        damaged, and the first and fourth small ships destroyed
         :param draw_as_enemy: if set to True, the ships will be drawn as a sunk
         or undamaged, to not indicate which ship has been struck to the
         enemy, False by default

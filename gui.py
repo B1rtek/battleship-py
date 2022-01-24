@@ -134,7 +134,7 @@ class UIBoard:
     def _initialize_cached_board(self):
         """
         Initializes the _cached_board by setting all fields' statuses to
-        FieldStatus.SUNK to ensure that all of the buttons in this UIBoard will
+        FieldStatus.SUNK to ensure that all buttons in this UIBoard will
         refresh their state and start showing the correct start state as the
         Setup phase or the Game begins, as the update_board() function only
         refreshes a button if there was a change of state of it's corresponding
@@ -145,7 +145,7 @@ class UIBoard:
 
     def set_icons(self, icons_dict: dict):
         """
-        Sets the provided icons dictionary as the one used by this board
+        Sets the provided icons' dictionary as the one used by this board
         :param icons_dict: Dictionary containing all icons needed
         :type icons_dict: dict
         """
@@ -251,9 +251,9 @@ class UIFleet:
     def _initialize_cached_fleet(self):
         """
         Initializes the _cached_fleet by setting all segments' statuses to
-        FieldStatus.SUNK to ensure that all of the display buttons in this
-        UIFleet will refresh their state and start showing the correct start
-        state at the beginning of the game, as the update_board() function only
+        FieldStatus.SUNK to ensure that all display buttons in this UIFleet
+        will refresh their state and start showing the correct start state at
+        the beginning of the game, as the update_board() function only
         refreshes a button if there was a change of state of it's corresponding
         ShipSegment to improve performance
         """
@@ -265,7 +265,7 @@ class UIFleet:
 
     def set_icons(self, icons_dict: dict):
         """
-        Sets the provided icons dictionary as the one used by this board
+        Sets the provided icons' dictionary as the one used by this board
         :param icons_dict: Dictionary containing all icons needed
         :type icons_dict: dict
         """

@@ -117,17 +117,18 @@ def test_board_str():
     board.set_field_status('j', 1, FieldStatus.SUNK)
     board.set_field_status('j', 10, FieldStatus.SELECTED)
     assert str(board) == "   abcdefghij\n" \
-                         "\n" \
-                         " 1 █        ▒\n" \
-                         " 2           \n" \
-                         " 3           \n" \
-                         " 4           \n" \
-                         " 5           \n" \
-                         " 6           \n" \
-                         " 7           \n" \
-                         " 8           \n" \
-                         " 9           \n" \
-                         "10 .        #\n"
+                         "  +=-=-=-=-=-+\n" \
+                         " 1|█        ▒|\n" \
+                         f" 2{chr(186)}          {chr(186)}\n" \
+                         " 3|          |\n" \
+                         f" 4{chr(186)}          {chr(186)}\n" \
+                         " 5|          |\n" \
+                         f" 6{chr(186)}          {chr(186)}\n" \
+                         " 7|          |\n" \
+                         f" 8{chr(186)}          {chr(186)}\n" \
+                         " 9|          |\n" \
+                         f"10{chr(186)}.        #{chr(186)}\n" \
+                         "  +=-=-=-=-=-+"
 
 
 def test_board_clear_board():
@@ -183,7 +184,7 @@ def test_board_mark_sunken_ship():
         assert board.get_field_status(x, y) == FieldStatus.SUNK
 
 
-def test_gameboard_create():
+def test_game_board_create():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -209,7 +210,7 @@ def test_gameboard_create():
                        get_field_status(x, y) == FieldStatus.NOTHING
 
 
-def test_gameboard_discover_field_miss():
+def test_game_board_discover_field_miss():
     board = Board()
     gboard = GameBoard(board)
     hit = gboard.discover_field('b', 1)
@@ -220,7 +221,7 @@ def test_gameboard_discover_field_miss():
     assert board_seen_by_enemy.get_field_status('b', 1) == FieldStatus.MISS
 
 
-def test_gameboard_discover_field_hit():
+def test_game_board_discover_field_hit():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -236,7 +237,7 @@ def test_gameboard_discover_field_hit():
     assert board_seen_by_enemy.get_field_status(x, y) == FieldStatus.SHIP
 
 
-def test_gameboard_discover_field_sunk():
+def test_game_board_discover_field_sunk():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -264,7 +265,7 @@ def test_gameboard_discover_field_sunk():
     assert board_seen_by_enemy.get_field_status(x, y) == FieldStatus.SUNK
 
 
-def test_gameboard_mark_as_empty():
+def test_game_board_mark_as_empty():
     board = Board()
     gboard = GameBoard(board)
     marked = gboard.mark_as_empty('a', 1)
@@ -274,11 +275,11 @@ def test_gameboard_mark_as_empty():
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     assert board_seen_by_enemy.get_field_status('a', 1) == FieldStatus.MISS
     # Both players can see which fields have been marked by their enemy. It
-    # gives the player the idea how much moves he can survive, and the markers
+    # gives the player the idea how many moves he can survive, and the markers
     # placed by the player prevent the player from shooting at these fields.
 
 
-def test_gameboard_mark_as_empty_fail_field_marked():
+def test_game_board_mark_as_empty_fail_field_marked():
     board = Board()
     gboard = GameBoard(board)
     marked = gboard.mark_as_empty('a', 1)
@@ -291,7 +292,7 @@ def test_gameboard_mark_as_empty_fail_field_marked():
     assert board_seen_by_enemy.get_field_status('a', 1) == FieldStatus.MISS
 
 
-def test_gameboard_mark_as_empty_fail_ship_on_field():
+def test_game_board_mark_as_empty_fail_ship_on_field():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -309,7 +310,7 @@ def test_gameboard_mark_as_empty_fail_ship_on_field():
     assert board_seen_by_enemy.get_field_status(x, y) == FieldStatus.SHIP
 
 
-def test_gameboard_unmark_as_empty():
+def test_game_board_unmark_as_empty():
     board = Board()
     gboard = GameBoard(board)
     marked = gboard.mark_as_empty('a', 1)
@@ -322,7 +323,7 @@ def test_gameboard_unmark_as_empty():
     assert board_seen_by_enemy.get_field_status('a', 1) == FieldStatus.NOTHING
 
 
-def test_gameboard_unmark_as_empty_fail_not_marked():
+def test_game_board_unmark_as_empty_fail_not_marked():
     board = Board()
     gboard = GameBoard(board)
     unmarked = gboard.unmark_as_empty('a', 1)
@@ -333,7 +334,7 @@ def test_gameboard_unmark_as_empty_fail_not_marked():
     assert board_seen_by_enemy.get_field_status('a', 1) == FieldStatus.NOTHING
 
 
-def test_gameboard_unmark_as_empty_fail_field_not_empty():
+def test_game_board_unmark_as_empty_fail_field_not_empty():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -351,7 +352,7 @@ def test_gameboard_unmark_as_empty_fail_field_not_empty():
     assert board_seen_by_enemy.get_field_status(x, y) == FieldStatus.SHIP
 
 
-def test_gameboard_sink_ship():
+def test_game_board_sink_ship():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -362,18 +363,18 @@ def test_gameboard_sink_ship():
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in ship_segments_to_sink:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SHIP
+            get_field_status(x, y) == FieldStatus.SHIP
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
     for x, y in ship_segments_to_sink:
         gboard.discover_field(x, y)
     board_seen_by_player = gboard.get_display_board()
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in ship_segments_to_sink:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SHIP
+            get_field_status(x, y) == FieldStatus.SHIP
     x, y = ship_segments_to_sink[0]
     ship_to_sink = fleet.find_ship(x, y)
     gboard.sink_ship(ship_to_sink)
@@ -381,11 +382,12 @@ def test_gameboard_sink_ship():
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in ship_segments_to_sink:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
 
-def test_gameboard_field_undiscovered():
+
+def test_game_board_field_undiscovered():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -394,7 +396,7 @@ def test_gameboard_field_undiscovered():
     assert gboard.field_undiscovered('a', 1)
 
 
-def test_gameboard_field_undiscovered_discovered():
+def test_game_board_field_undiscovered_discovered():
     board = Board()
     fleet = Fleet()
     fleet.create_random()
@@ -407,17 +409,11 @@ def test_gameboard_field_undiscovered_discovered():
 def test_mark_misses_around(monkeypatch):
     def rigged_fleet(self):
         self._ships.clear()
-        ships = []
-        ships.append(Ship(('a', 1), 4, False))
-        ships.append(Ship(('a', 3), 3, False))
-        ships.append(Ship(('a', 5), 3, False))
-        ships.append(Ship(('a', 7), 2, False))
-        ships.append(Ship(('a', 9), 2, False))
-        ships.append(Ship(('f', 5), 2, False))
-        ships.append(Ship(('f', 1), 1, False))
-        ships.append(Ship(('h', 1), 1, False))
-        ships.append(Ship(('j', 1), 1, False))
-        ships.append(Ship(('j', 10), 1, False))
+        ships = [Ship(('a', 1), 4, False), Ship(('a', 3), 3, False),
+                 Ship(('a', 5), 3, False), Ship(('a', 7), 2, False),
+                 Ship(('a', 9), 2, False), Ship(('f', 5), 2, False),
+                 Ship(('f', 1), 1, False), Ship(('h', 1), 1, False),
+                 Ship(('j', 1), 1, False), Ship(('j', 10), 1, False)]
         self._ships = ships
 
     monkeypatch.setattr("fleet.Fleet.create_random", rigged_fleet)
@@ -436,25 +432,25 @@ def test_mark_misses_around(monkeypatch):
     board_seen_by_enemy = gboard.get_display_board(display_as_enemy=True)
     for x, y in segments:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
     gboard.mark_misses_around(ship_to_sink)
     for x, y in segments:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.SUNK
+            get_field_status(x, y) == FieldStatus.SUNK
     for x, y in fields_around:
         assert board_seen_by_player. \
-                   get_field_status(x, y) == FieldStatus.NOTHING
+            get_field_status(x, y) == FieldStatus.NOTHING
         assert board_seen_by_enemy. \
-                   get_field_status(x, y) == FieldStatus.MISS
+            get_field_status(x, y) == FieldStatus.MISS
     # This function is used to automatically mark fields around when the ship
     # sinks, and these markers cannot be seen by the player as they aren't
     # placed by the enemy, but show up on their board automatically

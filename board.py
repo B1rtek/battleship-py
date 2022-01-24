@@ -59,9 +59,9 @@ class InvalidGameCoordinatesError(Exception):
 
 def game_to_array_coords(x: str, y: int) -> tuple[int, int]:
     """
-    Function used to translate in-game coordinates (like a 7) to board field
-    coordinates (a 7 is 0 6, since a is the first column and 7 is the 7th row,
-    and computers count from 0).
+    Function used to translate in-game coordinates (like 'a', 7) to board field
+    coordinates ('a' 7 is 0 6, since 'a' is the first column and 7 is the 7th
+    row, and computers count from 0)
     :param x: x coordinate of the field, a letter from a to j
     :type x: str
     :param y: y coordinate of the field, a number from 1 to 10
@@ -215,7 +215,7 @@ class GameBoard:
         """
         Creates a GameBoard, by taking a data board and creating a visible
         board for it
-        :param data_board: raw board with all positions of the ships etc
+        :param data_board: raw board with all positions of the ships etc.
         :type data_board: Board
         """
         self._data_board = data_board
@@ -223,7 +223,7 @@ class GameBoard:
 
     def discover_field(self, x: str, y: int) -> bool:
         """
-        Discovers a field when a player decides to shoot at it.
+        Discovers a field when a player decides to shoot at it
         :param x: x coordinate of the field
         :type x: str
         :param y: y coordinate of the field
