@@ -526,9 +526,6 @@ class BattleshipWindow(QMainWindow):
         self._game_enemy_board.set_icons(icons)
         self._fleet_creator_board.define_left_click_action(
             self._fleet_creator_left_click)
-        self._fleet_creator_board.define_right_click_action(self._nop)
-        self._game_player_board.define_left_click_action(self._nop)
-        self._game_player_board.define_right_click_action(self._nop)
         self._game_enemy_board.define_left_click_action(
             self._game_left_click)
         self._game_enemy_board.define_right_click_action(
@@ -611,17 +608,6 @@ class BattleshipWindow(QMainWindow):
             self.resize(700, 540)
         else:
             self.resize(730, 560)
-
-    def _nop(self, x, y):
-        """
-        Literally does nothing, assigned as a button action if the button is
-        supposed to do nothing when pressed
-        :param x: a placeholder ensuring compatibility with all other functions
-        assigned to clicks
-        :param y: a placeholder ensuring compatibility with all other functions
-        assigned to clicks
-        """
-        pass
 
     def _fleet_creator_start(self):
         """

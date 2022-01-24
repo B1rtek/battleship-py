@@ -68,9 +68,11 @@ class BoardButton(QToolButton):
         Calls functions assigned to the left and right clicks in this button
         """
         if QMouseEvent.button() == Qt.LeftButton:
-            self._left_click_action(self._x, self._y)
+            if self._left_click_action is not None:
+                self._left_click_action(self._x, self._y)
         elif QMouseEvent.button() == Qt.RightButton:
-            self._right_click_action(self._x, self._y)
+            if self._right_click_action is not None:
+                self._right_click_action(self._x, self._y)
 
     def set_left_click_action(self, function):
         """
