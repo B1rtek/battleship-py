@@ -52,6 +52,16 @@ class Game:
         else:
             self._settings = settings
 
+    def _create_enemy_fleet(self):
+        """
+        Creates enemy's fleet and board
+        """
+        self._enemy_fleet = Fleet()
+        self._enemy_fleet.create_random()
+        enemy_board = Board()
+        enemy_board.place_fleet(self._enemy_fleet)
+        self._enemy_board = GameBoard(enemy_board)
+
     def start_game(self, player_board: Board, player_fleet: Fleet):
         """
         Starts the game by assigning boards and fleets
@@ -67,16 +77,6 @@ class Game:
         self._players_turn = True
         self._won = False
         self._message_players_turn()
-
-    def _create_enemy_fleet(self):
-        """
-        Creates enemy's fleet and board
-        """
-        self._enemy_fleet = Fleet()
-        self._enemy_fleet.create_random()
-        enemy_board = Board()
-        enemy_board.place_fleet(self._enemy_fleet)
-        self._enemy_board = GameBoard(enemy_board)
 
     def discover_field(self, x: str, y: int) -> bool:
         """
@@ -157,6 +157,8 @@ class Game:
         Handles the computer enemy's move
         :return: True if the enemy hit player's ship, otherwise false.
         """
+        if self._players_turn:
+            return False
         target = self._enemy.shoot()
         x, y = target
         hit = self._player_board.discover_field(x, y)
@@ -194,6 +196,30 @@ class Game:
             self._message_player_win()
             self._won = True
             return True
+
+    def get_player_board_display(self) -> Board:
+        """
+        Returns player's board to display
+        """
+        return self._player_board.get_display_board()
+
+    def get_enemy_board_display(self) -> Board:
+        """
+        Returns enemy's board to display
+        """
+        return self._enemy_board.get_display_board(display_as_enemy=True)
+
+    def get_player_fleet_display(self) -> Fleet:
+        """
+        Returns player's fleet
+        """
+        return self._player_fleet.get_display_fleet()
+
+    def get_enemy_fleet_display(self) -> Fleet:
+        """
+        Returns enemy's fleet
+        """
+        return self._enemy_fleet.get_display_fleet(display_as_enemy=True)
 
     def _message_not_players_turn(self):
         """
@@ -298,30 +324,6 @@ class Game:
         messages = deepcopy(self._messages)
         self._messages.clear()
         return messages
-
-    def get_player_board_display(self) -> Board:
-        """
-        Returns player's board to display
-        """
-        return self._player_board.get_display_board()
-
-    def get_enemy_board_display(self) -> Board:
-        """
-        Returns enemy's board to display
-        """
-        return self._enemy_board.get_display_board(display_as_enemy=True)
-
-    def get_player_fleet_display(self) -> Fleet:
-        """
-        Returns player's fleet
-        """
-        return self._player_fleet.get_display_fleet()
-
-    def get_enemy_fleet_display(self) -> Fleet:
-        """
-        Returns enemy's fleet
-        """
-        return self._enemy_fleet.get_display_fleet(display_as_enemy=True)
 
     def players_turn(self) -> bool:
         return self._players_turn
