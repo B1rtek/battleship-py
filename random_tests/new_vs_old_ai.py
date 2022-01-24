@@ -3,9 +3,9 @@ from datetime import datetime
 import seaborn
 import matplotlib.pyplot as plt
 
-from enemy import Enemy
+import enemy
 from fleet_creator import FleetCreator
-from game import Game
+from game import Game, GameMessage
 
 test_runs = 10000
 rounds = []
@@ -17,7 +17,7 @@ game = Game()
 for i in range(test_runs):
     fleet_creator.random_fleet()
     board, fleet = fleet_creator.get_setup()
-    player = Enemy(hard_mode=True)
+    player = enemy.Enemy(hard_mode=True)
     game.start_game(board, fleet)
     round_count = 0
     while not game.won():
@@ -25,9 +25,9 @@ for i in range(test_runs):
             x, y = player.shoot()
             game.discover_field(x, y)
             messages = game.get_display_messages()
-            if messages.find("You've hit an enemy ship!") != -1:
+            if GameMessage.ENEMY_SHIP_HIT in messages:
                 player.react_to_hit()
-            if messages.find("You've destroyed an enemy ship!") != -1:
+            if GameMessage.ENEMY_SHIP_SUNK in messages:
                 player.react_to_sink()
             to_mark_as_empty = player.mark_as_empty()
             if to_mark_as_empty:

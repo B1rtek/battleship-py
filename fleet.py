@@ -3,7 +3,7 @@ from random import choice
 from typing import List
 
 import board
-from enemy import create_list_of_adherent, create_list_of_tangents
+import enemy
 
 
 class ShipSegment:
@@ -194,7 +194,8 @@ def fields_around_field(source: tuple[str, int]) -> List[tuple]:
     :type source: tuple
     :return: list containing coordinates of all fields around the source field
     """
-    return create_list_of_adherent(source) + create_list_of_tangents(source)
+    return enemy.create_list_of_adherent(
+        source) + enemy.create_list_of_tangents(source)
 
 
 def fields_around_ship(ship: Ship) -> List[tuple]:
