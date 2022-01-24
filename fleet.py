@@ -161,9 +161,6 @@ class Ship:
         return self._origin
 
 
-valid_x_coords = "abcdefghij"
-
-
 def field_available(temp_ship, temp_board) -> bool:
     """
     Checks if a ship with given position, size and rotation can be placed on

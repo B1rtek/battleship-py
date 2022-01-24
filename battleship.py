@@ -62,17 +62,17 @@ def format_fleet_creator_messages(messages: List[FCMessage]) -> str:
     :return: string with all messages formatted
     """
     help_content = "Help:\n" \
-                   "sel <x> <y>: Selects a ship in the given location\n" \
-                   "mv <x> <y>: Moves the selected ship to the given " \
+                   "sel <x> <y>: selects a ship in the given location\n" \
+                   "mv <x> <y>: moves the selected ship to the given " \
                    "location. The location points to the ship's " \
                    "uppermost or left segment\n" \
-                   "rot: Rotates the selected ship from vertical to " \
-                   "horizontal rotation, or the other way, around it's " \
+                   "rot: rotates the selected ship from vertical to " \
+                   "horizontal rotation, or the other way, around its " \
                    "uppermost or left part\n" \
-                   "rand: Places all ships randomly\n" \
-                   "done: Ends the setup process and accepts the " \
+                   "rand: places all ships randomly\n" \
+                   "done: ends the setup process and accepts the " \
                    "current board as the board for the game\n" \
-                   "quit: exits to main menu"
+                   "quit/exit: exits to main menu"
 
     messages_dict = {
         FCMessage.SHIP_SELECTED: "A ship has been selected",
@@ -92,6 +92,10 @@ def format_game_messages(messages: List[GameMessage],
     Formats the messages from Game, creating a string with all of them
     :param messages: messages from Game
     :type messages: list
+    :param extra_newline: adds a newline to the end of the generated string,
+    used in the GUI version since it doesn't use print() which automatically
+    adds the newlines
+    :type extra_newline: bool
     :return: string with all messages formatted
     """
     help_content = "Help:\n" \
@@ -106,23 +110,25 @@ def format_game_messages(messages: List[GameMessage],
         GameMessage.INVALID_COORDS: "Invalid field coordinates",
         GameMessage.ENEMY_SHIP_HIT: "You've hit an enemy ship!",
         GameMessage.ENEMY_SHIP_SUNK: "You've destroyed an enemy ship!",
-        GameMessage.ENEMY_MISS: "Enemy has missed. It's your turn now.",
-        GameMessage.ENEMY_WIN: "Enemy wins.",
-        GameMessage.FIELD_MARK_FAIL: "The field you tried to mark has a "
-                                     "discovered ship",
-        GameMessage.FIELD_UNMARK_FAIL: "The field you tried to unmark isn't "
+        GameMessage.ENEMY_MISS: "The enemy missed. It's your turn now",
+        GameMessage.ENEMY_WIN: "The enemy wins :(",
+        GameMessage.FIELD_MARK_FAIL: "The field you tried to mark is not "
+                                     "empty",
+        GameMessage.FIELD_UNMARK_FAIL: "The field you tried to unmark is not "
                                        "marked",
         GameMessage.GAME_HELP: help_content,
-        GameMessage.PLAYER_SHIP_HIT: "Enemy has hit one of your ships!",
+        GameMessage.PLAYER_SHIP_HIT: "The enemy has hit one of your ships!",
         GameMessage.PLAYER_SHIP_SUNK: "Enemy has destroyed one of your ships!",
         GameMessage.PLAYER_MISS: "You missed. Press to continue to the next "
                                  "enemy move",
         GameMessage.PLAYER_WIN: "You win!",
-        GameMessage.FIELD_ALREADY_DISCOVERED: "This field has been already "
+        GameMessage.FIELD_ALREADY_DISCOVERED: "This field has already been "
                                               "discovered",
-        GameMessage.PLAYERS_TURN: "It's your turn."
+        GameMessage.PLAYERS_TURN: "It's your turn"
     }
 
+    if not messages:
+        return ""
     messages_list = [messages_dict[x] for x in messages]
     formatted_messages = '\n'.join(messages_list)
     if extra_newline:
@@ -211,12 +217,12 @@ class BattleshipCMD:
         Displays (prints out) the Help screen
         """
         help_content = "How to play:\n" \
-                       "The objective of this game is to destroy your " \
-                       "opponent's fleet. You and your opponent shoot at " \
-                       "chosen fields on the board, and get information " \
-                       "whether you've hit or sunk you enemy's ship. If " \
-                       "there was a hit, the player gets another move, if " \
-                       "there isn't, the enemy gets to move.\n"
+                       "The goal of this game is to destroy " \
+                       "the enemy fleet. You and your opponent shoot at " \
+                       "selected fields on the board and get information " \
+                       "whether you hit or sunk the enemy ship. If there " \
+                       "was a hit, the player's next move is made, " \
+                       "otherwise the enemy moves."
         print(help_content)
 
     def _display_settings(self):
@@ -289,7 +295,7 @@ class BattleshipCMD:
             return Command.CREATOR_FLEET_RAND, "", 0
         elif command_parts[0] == "done":
             return Command.CREATOR_DONE, "", 0
-        elif command_parts[0] == "quit":
+        elif command_parts[0] in ["quit", "exit"]:
             return Command.EXIT_TO_MAIN, "", 0
         elif command_parts[0] == "help":
             return Command.CREATOR_HELP, "", 0
@@ -320,7 +326,7 @@ class BattleshipCMD:
             return Command.NOP, "", 0
         if command_parts[0] == "help":
             return Command.GAME_HELP, "", 0
-        elif command_parts[0] == "quit":
+        elif command_parts[0] in ["quit", "exit"]:
             return Command.EXIT_TO_MAIN, "", 0
         elif len(command_parts) >= 3:
             x = command_parts[1]
@@ -664,7 +670,7 @@ class BattleshipWindow(QMainWindow):
 
     def _fleet_creator_done(self):
         """
-        Ends the setup stage of the game ans starts the Game itself, passing
+        Ends the setup stage of the game and starts the Game itself, passing
         the created fleet from the Fleet Creator to the Game as the player's
         fleet
         """

@@ -22,8 +22,8 @@ $ python3 battleship.py --no-ui
 ```
 
 and the game will launch in the terminal. Terminal version has not-so-great controls, so I'd recommend playing the
-normal version. If you insist to play in terminal, make sure it's at least 30 lines tall or some content might not fit
-on the screen. In game, you can always type `help` to get help about how to preform moves in the game or how to set
+normal version. If you insist on playing in terminal, make sure it's at least 30 lines tall or some content might not 
+fit on the screen. In game, you can always type `help` to get help about how to preform moves in the game or how to set
 up your fleet.
 
 ## Other
